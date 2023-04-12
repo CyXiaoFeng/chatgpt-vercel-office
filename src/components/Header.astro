@@ -1,0 +1,95 @@
+---
+import Logo from "./Logo.astro"
+import ThemeToggle from "./ThemeToggle.astro"
+export const prerender = true
+---
+
+<header class="sticky top--100px z-99 px-2em relative">
+  <!-- <img  class="qr1   w-140px" src="/qr1.jpg" /> -->
+  <div class="flex justify-between">
+    <div class="w-100px h-100px logo">
+      <Logo />
+    </div>
+    <div class="right_img">
+      <!-- <img id="themeToggle" class="qr2   h-100px" src="/qr2.jpg" /> -->
+    </div>
+  </div>
+  <div class="flex justify-between items-center py-1">
+    <div
+      class="flex items-center mt-2 pb-2 text-2xl title cursor-pointer"
+      onclick="scrollToTop()"
+    >
+      <span
+        class="text-transparent font-extrabold bg-clip-text bg-gradient-to-r dark:from-yellow-300 from-yellow-600 dark:to-red-700 to-red-700 mr-1"
+        >ChatGPT</span
+      >
+      <span class="ml-1 font-extrabold text-slate-7 dark:text-slate"
+        >中国服务中心</span
+      >
+    </div>
+    <ThemeToggle />
+  </div>
+</header>
+
+<script is:inline>
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    })
+  }
+</script>
+
+<style is:inline>
+  .after .title,
+  .after #themeToggle,
+  .after .logo,
+  .after #message-container {
+    transition-property: transform, opacity;
+    transition-duration: 1s;
+    transition-timing-function: ease-in-out;
+  }
+
+  .before .logo {
+    transform: translate3D(25px, 150px, 0) scale(2);
+  }
+
+  .before #themeToggle {
+    transform: translate3D(0, 200px, 0) rotate(240deg);
+  }
+
+  .before .title,
+  .before #message-container {
+    transform: translate3D(0, 200px, 0);
+  }
+
+  .before #themeToggle,
+  .before #message-container {
+    opacity: 0;
+  }
+
+  #themeToggle {
+    border: 0;
+    opacity: 1;
+  }
+  .after #message-container {
+    opacity: 1;
+  }
+  .right_img {
+    display: flex;
+  }
+  .qr1 {
+    object-fit: scale-down;
+    position: fixed;
+    right: 20px;
+  }
+  .qr2 {
+    object-fit: scale-down;
+    margin-top: -10px;
+  }
+  @media (max-width: 900px) {
+    .qr1 {
+      display: none;
+    }
+  }
+</style>
