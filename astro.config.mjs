@@ -1,12 +1,4 @@
-import { defineConfig } from "astro/config"
-import cloudflare from "@astrojs/cloudflare"
-import {
-  presetUno,
-  presetIcons,
-  presetAttributify,
-  presetTypography
-} from "unocss"
-
+import { defineConfig } from 'astro/config'
 import unocss from 'unocss/astro'
 import solidJs from '@astrojs/solid-js'
 
@@ -16,17 +8,14 @@ import vercel from '@astrojs/vercel/edge'
 import netlify from '@astrojs/netlify/edge-functions'
 import disableBlocks from './plugins/disableBlocks'
 
-const adapter = () => {
-  if (process.env.VERCEL) {
+const envAdapter = () => {
+  if (process.env.OUTPUT === 'vercel') {
     return vercel()
-  } else if (process.env.NETLIFY) {
+  } else if (process.env.OUTPUT === 'netlify') {
     return netlify()
-  } else if (process.env.CF_PAGES) {
-    // cloudflare 无法提供 node18 环境，所以目前无法正常运行。
-    return cloudflare()
   } else {
     return node({
-      mode: "standalone"
+      mode: 'standalone',
     })
   }
 }
@@ -34,23 +23,11 @@ const adapter = () => {
 // https://astro.build/config
 export default defineConfig({
   integrations: [
-    unocss({
-      presets: [
-        presetAttributify(),
-        presetUno(),
-        presetTypography({
-          cssExtend: {
-            ":not(pre) > code::before,:not(pre) > code::after": ""
-          }
-        }),
-        presetIcons()
-      ]
-    }),
+    unocss(),
     solidJs(),
-   
   ],
-  output: "server",
-  adapter: adapter(),
+  output: 'server',
+  adapter: envAdapter(),
   vite: {
     plugins: [
       process.env.OUTPUT === 'vercel' && disableBlocks(),
