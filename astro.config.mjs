@@ -6,6 +6,7 @@ import {
   presetAttributify,
   presetTypography
 } from "unocss"
+import AstroPWA from "@vite-pwa/astro"
 
 import unocss from 'unocss/astro'
 import solidJs from '@astrojs/solid-js'
@@ -58,7 +59,7 @@ export default defineConfig({
       ]
     }),
     solidJs(),
-   
+    
   ],
   output: "server",
   adapter: envAdapter(),
