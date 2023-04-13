@@ -89,5 +89,10 @@ export default defineConfig({
     })
   ],
   output: "server",
-  adapter: adapter()
+  adapter: adapter(),
+  vite: {
+    build: {
+      chunkSizeWarningLimit: 1600,
+    },
+  },
 })
