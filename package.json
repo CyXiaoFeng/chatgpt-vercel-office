@@ -42,6 +42,7 @@
     "fzf": "^0.5.1",
     "highlight.js": "^11.7.0",
     "html-to-image": "^1.11.11",
+    "js-sha256": "^0.9.0",
     "just-throttle": "^4.2.0",
     "katex": "^0.16.4",
     "markdown-it": "^13.0.1",
@@ -49,7 +50,7 @@
     "markdown-it-katex": "^2.0.3",
     "markdown-it-kbd": "^2.2.2",
     "solid-js": "^1.6.15",
-    "js-sha256": "^0.9.0",
+    "stream": "^0.0.2",
     "undici": "^5.20.0"
   },
   "devDependencies": {
@@ -72,6 +73,5 @@
     "vite-plugin-pwa": "^0.14.4",
     "workbox-window": "^6.5.4"
   },
-  "packageManager": "pnpm@7.29.0" 
-  
+  "packageManager": "pnpm@7.29.0"
 }

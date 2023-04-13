@@ -70,6 +70,9 @@ dependencies:
   solid-js:
     specifier: ^1.6.15
     version: 1.6.15
+  stream:
+    specifier: ^0.0.2
+    version: registry.npmmirror.com/stream@0.0.2
   undici:
     specifier: ^5.20.0
     version: registry.npmmirror.com/undici@5.20.0
@@ -7328,6 +7331,12 @@ packages:
     name: electron-to-chromium
     version: 1.4.317
 
+  registry.npmmirror.com/emitter-component@1.1.1:
+    resolution: {integrity: sha512-G+mpdiAySMuB7kesVRLuyvYRqDmshB7ReKEVuyBPkzQlmiDiLrt7hHHIy4Aff552bgknVN7B2/d3lzhGO5dvpQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/emitter-component/-/emitter-component-1.1.1.tgz}
+    name: emitter-component
+    version: 1.1.1
+    dev: false
+
   registry.npmmirror.com/es-abstract@1.21.2:
     resolution: {integrity: sha512-y/B5POM2iBnIxCiernH1G7rC9qQoM77lLIMQLuob0zhp8C56Po81+2Nj0WFKnd0pNReDTnkYryc+zhOzpEIROg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/es-abstract/-/es-abstract-1.21.2.tgz}
     name: es-abstract
@@ -8745,6 +8754,14 @@ packages:
     version: 1.4.8
     deprecated: Please use @jridgewell/sourcemap-codec instead
     dev: true
+
+  registry.npmmirror.com/stream@0.0.2:
+    resolution: {integrity: sha512-gCq3NDI2P35B2n6t76YJuOp7d6cN/C7Rt0577l91wllh0sY9ZBuw9KaSGqH/b0hzn3CWWJbpbW0W0WvQ1H/Q7g==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/stream/-/stream-0.0.2.tgz}
+    name: stream
+    version: 0.0.2
+    dependencies:
+      emitter-component: registry.npmmirror.com/emitter-component@1.1.1
+    dev: false
 
   registry.npmmirror.com/streamsearch@1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/streamsearch/-/streamsearch-1.1.0.tgz}
