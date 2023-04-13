@@ -1,19 +1,12 @@
 import { defineConfig } from "astro/config"
-import node from "@astrojs/node"
-import netlify from "@astrojs/netlify/edge-functions"
 import cloudflare from "@astrojs/cloudflare"
-import unocss from "unocss/astro"
-import vercel from '@astrojs/vercel/edge'
 import {
   presetUno,
   presetIcons,
   presetAttributify,
   presetTypography
 } from "unocss"
-import solidJs from "@astrojs/solid-js"
-import AstroPWA from "@vite-pwa/astro"
 
-import { defineConfig } from 'astro/config'
 import unocss from 'unocss/astro'
 import solidJs from '@astrojs/solid-js'
 
@@ -54,49 +47,7 @@ export default defineConfig({
       ]
     }),
     solidJs(),
-    AstroPWA({
-      base: "/",
-      scope: "/",
-      includeAssets: ["favicon.svg"],
-      registerType: "autoUpdate",
-      manifest: {
-        name: "ChatGPT",
-        lang: "zh-cn",
-        short_name: "ChatGPT",
-        background_color: "#f6f8fa",
-        icons: [
-          {
-            src: "192.png",
-            sizes: "192x192",
-            type: "image/png"
-          },
-          {
-            src: "256.png",
-            sizes: "256x256",
-            type: "image/png"
-          },
-          {
-            src: "512.png",
-            sizes: "512x512",
-            type: "image/png"
-          },
-          {
-            src: "512.png",
-            sizes: "512x512",
-            type: "image/png"
-          }
-        ]
-      },
-      disable: !!process.env.NETLIFY,
-      workbox: {
-        navigateFallback: "/404",
-        globPatterns: ["**/*.{css,js,html,svg,png,ico,txt}"]
-      },
-      devOptions: {
-        enabled: true,
-        navigateFallbackAllowlist: [/^\/404$/]
-      }
-    })
+   
   ],
   output: "server",
   adapter: adapter(),
