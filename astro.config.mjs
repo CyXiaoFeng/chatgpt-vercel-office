@@ -1,5 +1,12 @@
 import { defineConfig } from "astro/config"
 import cloudflare from "@astrojs/cloudflare"
+import {
+  presetUno,
+  presetIcons,
+  presetAttributify,
+  presetTypography
+} from "unocss"
+
 import unocss from 'unocss/astro'
 import solidJs from '@astrojs/solid-js'
 
@@ -23,6 +30,7 @@ const adapter = () => {
     })
   }
 }
+
 const envAdapter = () => {
   if (process.env.OUTPUT === 'vercel') {
     return vercel()
@@ -53,7 +61,7 @@ export default defineConfig({
    
   ],
   output: "server",
-  adapter: adapter(),
+  adapter: envAdapter(),
   vite: {
     plugins: [
       process.env.OUTPUT === 'vercel' && disableBlocks(),
