@@ -232,7 +232,7 @@ export default function (props: {
       content: inputValue
     }
     if (systemRule) message.content += "。\n\n" + systemRule
-    const response = await fetch("/api/generate", {
+    const response = await fetch("/api", {
       method: "POST",
       body: JSON.stringify({
         messages: setting().continuousDialogue
