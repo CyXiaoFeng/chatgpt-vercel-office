@@ -104,7 +104,7 @@ export default defineConfig({
     plugins: [
       process.env.OUTPUT === 'vercel' && disableBlocks(),
       process.env.OUTPUT === 'netlify' && disableBlocks('netlify'),
-      process.env.OUTPUT !== 'netlify' && VitePWA()
+      process.env.OUTPUT !== 'netlify'
     ],
     build: {
       chunkSizeWarningLimit: 1600,
