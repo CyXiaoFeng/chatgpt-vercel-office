@@ -37,12 +37,23 @@ const envAdapter = () => {
 // https://astro.build/config
 export default defineConfig({
   integrations: [
-    unocss(),
+    unocss({
+      presets: [
+        presetAttributify(),
+        presetUno(),
+        presetTypography({
+          cssExtend: {
+            ":not(pre) > code::before,:not(pre) > code::after": ""
+          }
+        }),
+        presetIcons()
+      ]
+    }),
     solidJs(),
    
   ],
   output: "server",
-  adapter: envAdapter(),
+  adapter: adapter(),
   vite: {
     plugins: [
       process.env.OUTPUT === 'vercel' && disableBlocks(),
