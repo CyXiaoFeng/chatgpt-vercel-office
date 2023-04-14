@@ -242,7 +242,7 @@ export default function (props: {
               k => k.role !== "error"
             )
           : [...messageList().filter(k => k.special === "locked"), message],
-        key: setting().openaiAPIKey || undefined,
+        // key: setting().openaiAPIKey || undefined,
         temperature: setting().openaiAPITemperature / 100,
         password: setting().password,
         model: setting().model,
