@@ -53,7 +53,7 @@ export const post: APIRoute = async context => {
       { status: 401 }
     )
   }
-  const initOptions = generatePayload("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", messages)
+  const initOptions = generatePayload("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", messages)
   // #vercel-disable-blocks
   if (httpsProxy) initOptions.dispatcher = new ProxyAgent(httpsProxy)
   // #vercel-end
