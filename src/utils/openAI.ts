@@ -24,6 +24,7 @@ export const generatePayload = (
 export const parseOpenAIStream = (rawResponse: Response) => {
   const encoder = new TextEncoder()
   const decoder = new TextDecoder()
+  
   if (!rawResponse.ok) {
     return new Response(rawResponse.body, {
       status: rawResponse.status,
