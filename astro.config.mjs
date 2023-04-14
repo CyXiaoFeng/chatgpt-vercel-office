@@ -110,23 +110,7 @@ export default defineConfig({
     plugins: [
       process.env.OUTPUT === 'vercel' && disableBlocks(),
       process.env.OUTPUT === 'netlify' && disableBlocks('netlify'),
-      process.env.OUTPUT !== 'netlify' && VitePWA({
-        registerType: 'autoUpdate',
-        manifest: {
-          name: 'ChatGPT-API Demo',
-          short_name: 'ChatGPT Demo',
-          description: 'A demo repo based on OpenAI API',
-          theme_color: '#212129',
-          background_color: '#ffffff'
-        },
-        client: {
-          installPrompt: true,
-          periodicSyncForUpdates: 20,
-        },
-        devOptions: {
-          enabled: true,
-        },
-      }),
+      process.env.OUTPUT !== 'netlify',
     ],
     build: {
       chunkSizeWarningLimit: 1600,
