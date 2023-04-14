@@ -55,7 +55,53 @@ export default defineConfig({
       ]
     }),
     solidJs(),
-    
+    AstroPWA({
+      base: "/",
+      scope: "/",
+      includeAssets: ["favicon.svg"],
+      registerType: "autoUpdate",
+      manifest: {
+        name: "ChatGPT",
+        lang: "zh-cn",
+        short_name: "ChatGPT",
+        background_color: "#f6f8fa",
+        icons: [
+          {
+            src: "192.png",
+            sizes: "192x192",
+            type: "image/png"
+          },
+          {
+            src: "256.png",
+            sizes: "256x256",
+            type: "image/png"
+          },
+          {
+            src: "512.png",
+            sizes: "512x512",
+            type: "image/png"
+          },
+          {
+            src: "512.png",
+            sizes: "512x512",
+            type: "image/png"
+          }
+        ]
+      },
+      disable: !!process.env.NETLIFY,
+      workbox: {
+        navigateFallback: "/404",
+        globPatterns: ["**/*.{css,js,html,svg,png,ico,txt}"]
+      },
+      devOptions: {
+        enabled: true,
+        navigateFallbackAllowlist: [/^\/404$/]
+      },
+      client: {
+        installPrompt: true,
+        periodicSyncForUpdates: 20,
+      }
+    })
   ],
   output: "server",
   adapter: envAdapter(),
@@ -70,25 +116,7 @@ export default defineConfig({
           short_name: 'ChatGPT Demo',
           description: 'A demo repo based on OpenAI API',
           theme_color: '#212129',
-          background_color: '#ffffff',
-          icons: [
-            {
-              src: 'pwa-192.png',
-              sizes: '192x192',
-              type: 'image/png',
-            },
-            {
-              src: 'pwa-512.png',
-              sizes: '512x512',
-              type: 'image/png',
-            },
-            {
-              src: 'icon.svg',
-              sizes: '32x32',
-              type: 'image/svg',
-              purpose: 'any maskable',
-            },
-          ],
+          background_color: '#ffffff'
         },
         client: {
           installPrompt: true,
