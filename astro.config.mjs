@@ -13,7 +13,6 @@ import {
 import solidJs from "@astrojs/solid-js"
 import AstroPWA from "@vite-pwa/astro"
 import { VitePWA } from 'vite-plugin-pwa'
-import disableBlocks from './plugins/disableBlocks'
 const envAdapter = () => {
   if (process.env.OUTPUT === 'vercel') {
     return vercel()
@@ -56,53 +55,7 @@ export default defineConfig({
       ]
     }),
     solidJs(),
-    AstroPWA({
-      base: "/",
-      scope: "/",
-      includeAssets: ["favicon.svg"],
-      registerType: "autoUpdate",
-      manifest: {
-        name: "ChatGPT",
-        lang: "zh-cn",
-        short_name: "ChatGPT",
-        background_color: "#f6f8fa",
-        icons: [
-          {
-            src: "192.png",
-            sizes: "192x192",
-            type: "image/png"
-          },
-          {
-            src: "256.png",
-            sizes: "256x256",
-            type: "image/png"
-          },
-          {
-            src: "512.png",
-            sizes: "512x512",
-            type: "image/png"
-          },
-          {
-            src: "512.png",
-            sizes: "512x512",
-            type: "image/png"
-          }
-        ]
-      },
-      disable: !!process.env.NETLIFY,
-      workbox: {
-        navigateFallback: "/404",
-        globPatterns: ["**/*.{css,js,html,svg,png,ico,txt}"]
-      },
-      devOptions: {
-        enabled: true,
-        navigateFallbackAllowlist: [/^\/404$/]
-      },
-      client: {
-        installPrompt: true,
-        periodicSyncForUpdates: 20,
-      }
-    })
+    
   ],
   output: "server",
   adapter: envAdapter(),
@@ -110,7 +63,56 @@ export default defineConfig({
     plugins: [
       process.env.OUTPUT === 'vercel' && disableBlocks(),
       process.env.OUTPUT === 'netlify' && disableBlocks('netlify'),
-      process.env.OUTPUT !== 'netlify',
+      process.env.OUTPUT !== 'netlify' && VitePWA({
+        base: "/",
+        scope: "/",
+        includeAssets: ["favicon.svg"],
+        registerType: "autoUpdate",
+        manifest: {
+          name: "ChatGPT",
+          lang: "zh-cn",
+          short_name: "ChatGPT",
+          background_color: "#f6f8fa",
+          description: 'A demo repo based on OpenAI API',
+          theme_color: '#212129',
+          icons: [
+            {
+              src: "192.png",
+              sizes: "192x192",
+              type: "image/png"
+            },
+            {
+              src: "256.png",
+              sizes: "256x256",
+              type: "image/png"
+            },
+            {
+              src: "512.png",
+              sizes: "512x512",
+              type: "image/png"
+            },
+            {
+              src: "512.png",
+              sizes: "512x512",
+              type: "image/png"
+            }
+          ]
+        },
+        disable: !!process.env.NETLIFY,
+        workbox: {
+          navigateFallback: "/404",
+          globPatterns: ["**/*.{css,js,html,svg,png,ico,txt}"]
+        },
+        devOptions: {
+          enabled: true,
+          navigateFallbackAllowlist: [/^\/404$/]
+        },
+        client: {
+          installPrompt: true,
+          periodicSyncForUpdates: 20,
+        }
+       
+      })
     ],
     build: {
       chunkSizeWarningLimit: 1600,
