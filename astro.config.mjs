@@ -13,6 +13,7 @@ import {
 import solidJs from "@astrojs/solid-js"
 import AstroPWA from "@vite-pwa/astro"
 import { VitePWA } from 'vite-plugin-pwa'
+import disableBlocks from './plugins/disableBlocks'
 const envAdapter = () => {
   if (process.env.OUTPUT === 'vercel') {
     return vercel()
