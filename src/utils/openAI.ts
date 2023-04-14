@@ -14,9 +14,10 @@ export const generatePayload = (
   },
   method: "POST",
   body: JSON.stringify({
-    model,
-    messages,
-    temperature: 0.6,
+    model: model || "gpt-3.5-turbo",
+    messages: messages.map(k => ({ role: k.role, content: k.content })),
+    temperature:0.6,
+    // max_tokens: 4096 - tokens,
     stream: true
   })
 })

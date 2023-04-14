@@ -234,7 +234,7 @@ export default function (props: {
     if (systemRule) message.content += "。\n\n" + systemRule
     const timestamp = Date.now()
     const requestMessageList = [...messageList()]
-    const response = await fetch('/api', {
+    const response = await fetch('/api/generate', {
       method: "POST",
       body: JSON.stringify({
         messages: setting().continuousDialogue
