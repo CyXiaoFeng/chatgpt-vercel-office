@@ -233,15 +233,15 @@ export default function (props: {
     }
     if (systemRule) message.content += "。\n\n" + systemRule
     const timestamp = Date.now()
-    const requestMessageList = [...messageList()]
+    const rqmsg = setting().continuousDialogue
+    ? [...messageList().slice(0, -1), message].filter(
+        k => k.role !== "error"
+      )
+    : [...messageList().filter(k => k.special === "locked"), message]
     const response = await fetch('/api/generate', {
       method: "POST",
       body: JSON.stringify({
-        messages: setting().continuousDialogue
-          ? [...messageList().slice(0, -1), message].filter(
-              k => k.role !== "error"
-            )
-          : [...messageList().filter(k => k.special === "locked"), message],
+        messages: rqmsg,
         key: setting().openaiAPIKey || undefined,
         temperature: setting().openaiAPITemperature / 100,
         password: setting().password,
@@ -249,7 +249,7 @@ export default function (props: {
         time: timestamp,
         sign: await generateSignature({
           t: timestamp,
-          m: requestMessageList?.[requestMessageList.length - 1]?.content || '',
+          m: rqmsg?.[rqmsg.length - 1]?.content || '',
         }),
       }),
       signal: controller.signal
