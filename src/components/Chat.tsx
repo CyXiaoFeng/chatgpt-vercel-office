@@ -234,7 +234,7 @@ export default function (props: {
     if (systemRule) message.content += "。\n\n" + systemRule
     const timestamp = Date.now()
     const requestMessageList = [...messageList()]
-    const response = await fetch("/api/generate", {
+    const response = await fetch('/api/generate', {
       method: "POST",
       body: JSON.stringify({
         messages: setting().continuousDialogue
@@ -246,6 +246,7 @@ export default function (props: {
         temperature: setting().openaiAPITemperature / 100,
         password: setting().password,
         model: setting().model,
+        time: timestamp,
         sign: await generateSignature({
           t: timestamp,
           m: requestMessageList?.[requestMessageList.length - 1]?.content || '',
