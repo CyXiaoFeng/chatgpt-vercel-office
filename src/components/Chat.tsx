@@ -9,7 +9,7 @@ import throttle from "just-throttle"
 import { isMobile } from "~/utils"
 import type { Setting } from "~/system"
 import { makeEventListener } from "@solid-primitives/event-listener"
-
+import { generateSignature } from '@/utils/auth'
 export default function (props: {
   prompts: PromptItem[]
   env: {
@@ -232,6 +232,8 @@ export default function (props: {
       content: inputValue
     }
     if (systemRule) message.content += "。\n\n" + systemRule
+    const timestamp = Date.now()
+    const requestMessageList = [...messageList()]
     const response = await fetch("/api/generate", {
       method: "POST",
       body: JSON.stringify({
@@ -243,7 +245,11 @@ export default function (props: {
         key: setting().openaiAPIKey || undefined,
         temperature: setting().openaiAPITemperature / 100,
         password: setting().password,
-        model: setting().model
+        model: setting().model,
+        sign: await generateSignature({
+          t: timestamp,
+          m: requestMessageList?.[requestMessageList.length - 1]?.content || '',
+        }),
       }),
       signal: controller.signal
     })

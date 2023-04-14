@@ -12,7 +12,6 @@ import {
   presetTypography
 } from "unocss"
 import solidJs from "@astrojs/solid-js"
-import AstroPWA from "@vite-pwa/astro"
 import { VitePWA } from 'vite-plugin-pwa'
 const envAdapter = () => {
   if (process.env.OUTPUT === 'vercel') {
