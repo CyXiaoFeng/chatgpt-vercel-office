@@ -4,6 +4,7 @@ import node from "@astrojs/node"
 import netlify from "@astrojs/netlify/edge-functions"
 import cloudflare from "@astrojs/cloudflare"
 import unocss from "unocss/astro"
+import disableBlocks from './plugins/disableBlocks'
 import {
   presetUno,
   presetIcons,
