@@ -59,6 +59,7 @@ export default defineConfig({
   ],
   output: "server",
   adapter: envAdapter(),
+  server: { port: 8080},
   vite: {
     plugins: [
       process.env.OUTPUT === 'vercel' && disableBlocks(),
@@ -117,5 +118,6 @@ export default defineConfig({
     build: {
       chunkSizeWarningLimit: 1600,
     },
+    
   },
 })
