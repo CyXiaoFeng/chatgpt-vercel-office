@@ -28,5 +28,7 @@ export const verifySignature = async (payload: AuthPayload, sign: string) => {
   //   return false
   // }
   const payloadSign = await generateSignature(payload)
+  console.error(`sign->${sign}`)
+  console.error(`payloadSign->${payloadSign}`)
   return payloadSign === sign
 }
