@@ -1,0 +1,2 @@
+#!/bin/bash
+HOST=0.0.0.0 PORT=443 SERVER_KEY_PATH=/etc/ssl/aichut/private.key SERVER_CERT_PATH=/etc/ssl/aichut/certificate.crt node ./dist/server/entry.mjs
