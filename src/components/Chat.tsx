@@ -180,6 +180,15 @@ export default function (props: {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  async function sendMessage1(value?: string) {
+    const inputValue = value ?? inputContent()
+    const response = await fetch(`/api/${inputValue}`)
+    console.log(response)
+     
+    
+  }
+
   async function sendMessage(value?: string) {
     const inputValue = value ?? inputContent()
     if (!inputValue) {
@@ -490,7 +499,7 @@ export default function (props: {
               >
                 <button
                   title="发送"
-                  onClick={() => sendMessage()}
+                  onClick={() => sendMessage1()}
                   class="i-carbon:send-filled text-5 mx-3"
                 />
               </div>
