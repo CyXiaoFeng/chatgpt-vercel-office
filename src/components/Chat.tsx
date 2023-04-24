@@ -181,9 +181,18 @@ export default function (props: {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
+  
   async function sendMessage1(value?: string) {
     const inputValue = value ?? inputContent()
-    const response = await fetch(`/api/${inputValue}`)
+    const options = {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ',
+        'Content-Type': 'application/json'
+      }
+    }
+    const response = await fetch(`/api/${inputValue}`,
+    options)
     console.log(response)
      
     
@@ -499,7 +508,7 @@ export default function (props: {
               >
                 <button
                   title="发送"
-                  onClick={() => sendMessage1()}
+                  onClick={() => sendMessage()}
                   class="i-carbon:send-filled text-5 mx-3"
                 />
               </div>

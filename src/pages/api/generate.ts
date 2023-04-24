@@ -4,8 +4,8 @@ import { ProxyAgent, fetch } from "undici"
 import { generatePayload, parseOpenAIStream } from "@/utils/openAI"
 import { verifySignature } from "@/utils/auth"
 import type { APIRoute } from "astro"
-const apiKey = import.meta.env.OPENAI_API_KEY
 const httpsProxy = import.meta.env.HTTPS_PROXY
+import {Users} from "@/utils/mongodb"
 const baseUrl = (
   import.meta.env.OPENAI_API_BASE_URL || "https://api.openai.com"
 )
@@ -16,7 +16,7 @@ const passList = sitePassword.split(",") || []
 
 export const post: APIRoute = async context => {
   const body = await context.request.json()
-  const { sign, time, messages, pass, key } = body
+  const { sign, time, messages, password, key } = body
   if (!messages) {
     return new Response(
       JSON.stringify({
@@ -27,16 +27,7 @@ export const post: APIRoute = async context => {
       { status: 400 }
     )
   }
-  if (sitePassword && !(sitePassword === pass || passList.includes(pass))) {
-    return new Response(
-      JSON.stringify({
-        error: {
-          message: "Invalid password."
-        }
-      }),
-      { status: 401 }
-    )
-  }
+ 
   if (
     import.meta.env.PROD &&
     !(await verifySignature(
@@ -53,8 +44,26 @@ export const post: APIRoute = async context => {
       { status: 401 }
     )
   }
-  // console.error(`key->${key}`)
-  const initOptions = generatePayload(key, messages)
+   /*if (sitePassword && !(sitePassword === pass || passList.includes(pass))) {
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: "Invalid password."
+        }
+      }),
+      { status: 401 }
+    )
+  }
+  */
+  let initOptions
+  if(password !==null && password !== undefined ) {
+    console.error(`pwd->${password}`)
+    const pwdkey = await (await Users()).findOne({ pwd: password })
+    console.error(`apikey from db=${pwdkey.apikey}`)
+    initOptions = generatePayload(pwdkey===null?"":pwdkey.apikey, messages)
+  } else {
+    initOptions = generatePayload(key, messages)
+  }
   // #vercel-disable-blocks
   if (httpsProxy) initOptions.dispatcher = new ProxyAgent(httpsProxy)
   // #vercel-end
