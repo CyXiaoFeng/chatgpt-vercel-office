@@ -16,12 +16,11 @@ const connectToDB = async () => {
   // Or better yet, put it in your .env
   return mongo.db(DB_NAME)
 }
-let client
-let clientPromise: Promise<MongoClient>
+
 export const getDB = async () => {
   
-        const mongo = await connectToDB()
-        return mongo
+  const mongo = await connectToDB()
+  return mongo
   
 }
 
