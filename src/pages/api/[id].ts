@@ -63,7 +63,7 @@ export const post: APIRoute = async ({ params, request }) => {
     if(params.id === "add") {
       const newuser = await request.json()
       console.info(`new user->${JSON.stringify(newuser)}`)
-      newuser.apikey = "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"
+      newuser.apikey = import.meta.env.FIX_API_KEY
       user = await (await Users()).insertOne(newuser)
     } 
     return new Response(JSON.stringify({ code: 200, message: "success", user: JSON.stringify(user)}), {

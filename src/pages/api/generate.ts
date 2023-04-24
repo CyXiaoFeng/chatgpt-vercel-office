@@ -56,7 +56,7 @@ export const post: APIRoute = async context => {
   }
   */
   let initOptions
-  if(password !==null && password !== undefined ) {
+  if(password !==null && password !== undefined && password.trim().length>0) {
     console.error(`pwd->${password}`)
     const user = await (await Users()).findOne({ pwd: Number(password) })
     if(user !== null) {
