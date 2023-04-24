@@ -18,12 +18,21 @@ async function getApiKeyByPWD(pwd:any) {
 
 export const get: APIRoute = async ({ params, request }) => {
     let rslt
-    console.info(request.headers.get("host"))
-    console.info(`param id->${params.id}`)
+    console.info(`param id->${params.id}, host = ${request.headers.get("host")}，username = ${request.headers.get("username")}`)
+    const delName = request.headers.get("username") || undefined
     if(params.id === "all") {
       console.info("all result")
        rslt = await (await Users()).find({}).toArray()
        return new Response(JSON.stringify({ code: 200, message: "success", result:  rslt}), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+    } else if(params.id === "del" && delName !== undefined) {
+      console.info(`delete user name->${delName}`)
+      rslt = await (await Users()).deleteOne({name:delName})
+      return new Response(JSON.stringify({ code: 200, message: "success", result:  rslt}), {
         status: 200,
         headers: {
           "Content-Type": "application/json"
@@ -56,7 +65,7 @@ export const post: APIRoute = async ({ params, request }) => {
       console.info(`new user->${JSON.stringify(newuser)}`)
       newuser.apikey = "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"
       user = await (await Users()).insertOne(newuser)
-    }
+    } 
     return new Response(JSON.stringify({ code: 200, message: "success", user: JSON.stringify(user)}), {
       status: 200,
       headers: {
