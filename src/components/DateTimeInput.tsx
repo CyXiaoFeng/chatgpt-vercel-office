@@ -1,8 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import moment from 'moment'
 interface Props {
-  count: number
-  setValue:(message:string)=>void
+  onInput:(message:string)=>void
+  onBlur:(reg,vlu)=>void
+  index:number
 }
 export default function DateTimeInput(props:Props
 ) {
@@ -14,7 +15,6 @@ export default function DateTimeInput(props:Props
     const value = event.target.value
     const currentValue = `${value}${newChar}`
     console.info(`value=${value},newChar=${newChar},cvalue=${currentValue}`)
-    
     const newValue = value.slice(0, event.target.selectionStart) + newChar + value.slice(event.target.selectionEnd)
     if (!pattern.test(newValue)) { // 判断输入的值是否符合格式
     //   event.preventDefault() // 阻止输入非法字符
@@ -27,12 +27,11 @@ export default function DateTimeInput(props:Props
     const inputValue = e.target.value
 
     if (regExp.test(inputValue)) {
-      console.error(inputValue +　"correct")
-      props.setValue(inputValue)
-    } else {
-      console.error(inputValue +　"incorrect")
-
-    }
+      // console.error(inputValue +　"correct")
+      props.onInput(inputValue)
+      
+    } 
+    props.onBlur(regExp,inputValue,props.index)
   }
   return (
     <input type="text" onbeforeinput={handleBeforeInput} class="form-control" onBlur={checkVaile} placeholder={formattedDate}/>

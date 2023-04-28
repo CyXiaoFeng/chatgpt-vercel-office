@@ -67,7 +67,6 @@ export const post: APIRoute = async ({ params, request }) => {
   try {
     if(params.id === "add") {
       const newuser = await request.json()
-      
       if(!checkUser(newuser)) {
         code = 400
         message = "parameter error"
