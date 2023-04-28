@@ -1,8 +1,8 @@
 import type { APIRoute } from "astro"
 import {Users} from "@/utils/mongodb"
 import  {MongoClient} from "mongodb"
-
-interface user {
+import moment from 'moment'
+interface User {
   name:string,
   pwd:string,
   createTime:string,
@@ -48,9 +48,14 @@ export const get: APIRoute = async ({ params, request }) => {
     }
 }
 
+const checkUser =(user)=>{
+  const regExp = /^\d{4}\/([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01]) ([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/
+  return user.name.length > 0 && user.pwd.length >0 && regExp.test(user.expireTime)
+}
 
 export const post: APIRoute = async ({ params, request }) => {
   let user
+  let code =200,message
   if(request.headers.get("Authorization") !== "ohmygod") {
     return new Response(JSON.stringify({ code: 401, message: "no permission"}), {
       status: 401,
@@ -62,12 +67,23 @@ export const post: APIRoute = async ({ params, request }) => {
   try {
     if(params.id === "add") {
       const newuser = await request.json()
-      console.info(`new user->${JSON.stringify(newuser)}`)
+      
+      if(!checkUser(newuser)) {
+        code = 400
+        message = "parameter error"
+      } else {
+      const now = moment()
+      const formattedDate = now.format('YYYY/MM/DD HH:mm:ss')
+      newuser.createTime = formattedDate
       newuser.apikey = import.meta.env.FIX_API_KEY
+      console.info(`new user->${JSON.stringify(newuser)}`)
       user = await (await Users()).insertOne(newuser)
+      code = 200
+      message = "success"
+      }
     } 
-    return new Response(JSON.stringify({ code: 200, message: "success", user: JSON.stringify(user)}), {
-      status: 200,
+    return new Response(JSON.stringify({ code: code, message: message, user: JSON.stringify(user)}), {
+      status: code,
       headers: {
         "Content-Type": "application/json"
       }

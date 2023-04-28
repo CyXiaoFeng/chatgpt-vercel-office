@@ -182,21 +182,7 @@ export default function (props: {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   
-  async function sendMessage1(value?: string) {
-    const inputValue = value ?? inputContent()
-    const options = {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ',
-        'Content-Type': 'application/json'
-      }
-    }
-    const response = await fetch(`/api/${inputValue}`,
-    options)
-    console.log(response)
-     
-    
-  }
+ 
 
   async function sendMessage(value?: string) {
     const inputValue = value ?? inputContent()
