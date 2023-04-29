@@ -1,6 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-icons/font/bootstrap-icons.min.css'
-import 'bootstrap/dist/js/bootstrap.min.js'
 import DateTimeInput from './DateTimeInput'
 import { Match, Switch, Show } from 'solid-js'
 interface Props {
