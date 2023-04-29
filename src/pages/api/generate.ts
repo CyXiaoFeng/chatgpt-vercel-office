@@ -58,7 +58,7 @@ export const post: APIRoute = async context => {
   let initOptions
   if(password !==null && password !== undefined && password.trim().length>0) {
     console.error(`pwd->${password}`)
-    const user = await (await Users()).findOne({ pwd: Number(password) })
+    const user = await (await Users()).findOne({ pwd: password })
     if(user !== null) {
       console.error(`apikey from db=${user.apikey}`)
       initOptions = generatePayload(user===null?"":user.apikey, messages)
