@@ -12,6 +12,9 @@ interface Props {
     childIndex: number
 }
 export default function (props: Props) {
+    /*
+    根据正则检查输出的值是否有效
+    */
     const checkVail = (reg, value,index) => {
         const btnC = "btnCorrect" + index
         const btnI = "btnIncorrect" + index
@@ -19,6 +22,7 @@ export default function (props: Props) {
             // console.info(e.currentTarget)
             document.getElementById(btnC).style.display = "inline-block"
             document.getElementById(btnI).style.display = "none"
+            
         } else {
             document.getElementById(btnI).style.display = "inline-block"
             document.getElementById(btnC).style.display = "none"

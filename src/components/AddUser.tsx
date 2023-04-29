@@ -14,7 +14,7 @@ export default function () {
     const options = {
       method: 'POST',
       headers: {
-        'Authorization': 'ohmygod',
+        'Authorization': inputManagerPwd(),
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -27,7 +27,6 @@ export default function () {
       options)
     console.log(response)
 
-
   }
   async function setValue(expireTime: string) {
     console.info(`expireTime from child comp = ${expireTime}`)
@@ -35,24 +34,17 @@ export default function () {
     setIsdisabled(false)
   }
   const regex = /^.{4,}$/ // This regular expression matches any string with length greater than 3.
-  const regExp = /^\d{4}\/([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01]) ([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/
   const [inputName, setInputName] = createSignal("")
+  const [inputManagerPwd, setInputManagerPwd] = createSignal("")
   const [inputPwd, setInputPwd] = createSignal("")
   const [inputExpireTime, setInputExpireTime] = createSignal("")
   const [isdisabled, setIsdisabled] = createSignal(true)
-  const [items, setItems] = createSignal([{name:"用户名",initValue:inputName,onValue:setInputName, type:"text",reg:regex},
+  const [items, setItems] = createSignal([
+                              {name:"管理员密码",initValue:inputManagerPwd,onValue:setInputManagerPwd, type:"text",reg:regex},
+                              {name:"用户名",initValue:inputName,onValue:setInputName, type:"text",reg:regex},
                               {name:"密码",initValue:inputPwd,onValue:setInputPwd, type:"text",reg:regex},
-                              {name:"过期时间",initValue:inputExpireTime,onValue:setInputExpireTime, type:"expireTime",reg:regex}])
-  function handleChange(event) {
-    const inputValue = event.target.value
-    // 使用正则表达式验证输入值是否为"YYYY/MM/DD HH:mm:ss"格式
-    if (regex.test(inputValue)) {
-      setInputExpireTime(inputValue)
+                              {name:"过期时间",initValue:inputExpireTime,onValue:setValue, type:"expireTime",reg:regex}])
 
-    } else {
-      setInputExpireTime("")
-    }
-  }
   return (
     <div>
      {items().map((item, index) => (

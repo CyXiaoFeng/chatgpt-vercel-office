@@ -8,7 +8,10 @@ const DB_NAME = "userDB"
 // }
 
 const uri = MONGODB_URI//import.meta.env.MONGODB_URI
+
 const options = {}
+
+global.initDB = parseInt(import.meta.env.IS_FIRST_INIT_MONGODB)
 
 const connectToDB = async () => {
   const mongo = await new MongoClient(uri, options).connect()
@@ -18,7 +21,6 @@ const connectToDB = async () => {
 }
 
 export const getDB = async () => {
-  
   const mongo = await connectToDB()
   return mongo
   
@@ -26,5 +28,13 @@ export const getDB = async () => {
 
 export const Users = async () => {
   const db = await getDB()
-  return db.collection("users")
+  console.info(`is first initdb?${global.initDB === 0?"first":"many"}`)
+  if(global.initDB === 0) {
+    process.env.IS_FIRST_INIT_MONGODB = 1
+    global.initDB = 1
+    console.info(global.initDB)
+    return db.collection("users").createIndex({pwd:1},{unique:true})
+  } else 
+    return db.collection("users")
+  
 }
