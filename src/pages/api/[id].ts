@@ -1,6 +1,5 @@
 import type { APIRoute } from "astro"
 import { Users } from "@/utils/mongodb"
-import { MongoClient } from "mongodb"
 import moment from 'moment'
 interface User {
   name: string,
@@ -8,7 +7,7 @@ interface User {
   createTime: string,
   expireTime: string
 }
-
+const AUTH_CODE = import.meta.env.AUTH_CODE
 async function getApiKeyByPWD(pwd: any) {
   const apiKey = await (await Users()).findOne({ pwd: pwd })
   console.error(`apikey from db=${apiKey}`)
@@ -17,6 +16,8 @@ async function getApiKeyByPWD(pwd: any) {
 
 
 export const get: APIRoute = async ({ params, request }) => {
+  const response:Response = isAuth(request)
+  if(response !== undefined) return response
   let rslt
   console.info(`param id->${params.id}, host = ${request.headers.get("host")}，username = ${request.headers.get("username")}`)
   const delName = request.headers.get("username") || undefined
@@ -56,14 +57,8 @@ const checkUser = (user) => {
 export const post: APIRoute = async ({ params, request }) => {
   let user
   let code = 200, message
-  if (request.headers.get("Authorization") !== "ohmygod") {
-    return new Response(JSON.stringify({ code: 401, message: "no permission" }), {
-      status: 401,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-  }
+  const response:Response = isAuth(request)
+  if(response !== undefined) return response
   try {
     if (params.id === "add") {
       const newuser = await request.json()
@@ -99,3 +94,14 @@ export const post: APIRoute = async ({ params, request }) => {
 
 }
 
+function isAuth(request) {
+  if (request.headers.get("Authorization") !== AUTH_CODE) {
+    return new Response(JSON.stringify({ code: 401, message: "no permission" }), {
+      status: 401,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+  } 
+  return undefined
+}

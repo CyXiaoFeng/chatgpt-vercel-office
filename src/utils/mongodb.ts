@@ -33,8 +33,8 @@ export const Users = async () => {
     process.env.IS_FIRST_INIT_MONGODB = 1
     global.initDB = 1
     console.info(global.initDB)
-    return db.collection("users").createIndex({pwd:1},{unique:true})
-  } else 
+    await db.collection("users").createIndex({pwd:1},{unique:true})
+  } 
     return db.collection("users")
   
 }

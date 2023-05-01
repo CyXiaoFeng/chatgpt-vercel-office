@@ -1,10 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-icons/font/bootstrap-icons.min.css'
 import { createEffect, createSignal } from "solid-js"
-import DateTimeInput from './DateTimeInput'
 import InputCheck from './InputCheck'
-
-
 
 export default function () {
   async function sendMessage() {
