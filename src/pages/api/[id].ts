@@ -49,7 +49,7 @@ export const get: APIRoute = async ({ params, request }) => {
   }
 }
 
-const checkUser = (user) => {
+const checkUser = (user: { name: string | any[]; pwd: string | any[]; expireTime: string }) => {
   const regExp = /^\d{4}\/([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01]) ([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/
   return user.name.length > 0 && user.pwd.length > 0 && regExp.test(user.expireTime)
 }
