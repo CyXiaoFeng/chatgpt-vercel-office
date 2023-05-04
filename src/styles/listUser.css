@@ -1,0 +1,14 @@
+table tbody {
+    max-height: 300px;
+    display: block;
+    overflow-y: auto;
+ }
+ table thead, table tbody tr {
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+ }
+ table thead {
+    width: calc(100% - 3px); /*减去默认滚动条的宽度，让thead 与tbody 对齐*/
+ }
+ table tbody::-webkit-scrollbar { width: 3px;}  

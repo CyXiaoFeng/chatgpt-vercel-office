@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro"
 import { Users } from "@/utils/mongodb"
+import { ObjectId } from 'mongodb'   
 import moment from 'moment'
 interface User {
   name: string,
@@ -16,11 +17,11 @@ async function getApiKeyByPWD(pwd: any) {
 
 
 export const get: APIRoute = async ({ params, request }) => {
-  const response:Response = isAuth(request)
+  const response:Response|undefined = isAuth(request)
   if(response !== undefined) return response
   let rslt
   console.info(`param id->${params.id}, host = ${request.headers.get("host")}，username = ${request.headers.get("username")}`)
-  const delName = request.headers.get("username") || undefined
+  const _id = request.headers.get("_id") || undefined
   if (params.id === "all") {
     console.info("all result")
     rslt = await (await Users()).find({}).toArray()
@@ -30,9 +31,9 @@ export const get: APIRoute = async ({ params, request }) => {
         "Content-Type": "application/json"
       }
     })
-  } else if (params.id === "del" && delName !== undefined) {
-    console.info(`delete user name->${delName}`)
-    rslt = await (await Users()).deleteOne({ name: delName })
+  } else if (params.id === "del" && _id !== undefined) {
+    console.info(`delete user name id->${_id}`)
+    rslt = await (await Users()).deleteOne({ _id: new ObjectId(_id) })
     return new Response(JSON.stringify({ code: 200, message: "success", result: rslt }), {
       status: 200,
       headers: {
@@ -57,7 +58,7 @@ const checkUser = (user: { name: string | any[]; pwd: string | any[]; expireTime
 export const post: APIRoute = async ({ params, request }) => {
   let user
   let code = 200, message
-  const response:Response = isAuth(request)
+  const response:Response|undefined = isAuth(request)
   if(response !== undefined) return response
   try {
     if (params.id === "add") {
@@ -94,7 +95,7 @@ export const post: APIRoute = async ({ params, request }) => {
 
 }
 
-function isAuth(request) {
+function isAuth(request:any) {
   if (request.headers.get("Authorization") !== AUTH_CODE) {
     return new Response(JSON.stringify({ code: 401, message: "no permission" }), {
       status: 401,

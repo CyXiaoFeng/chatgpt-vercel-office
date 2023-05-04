@@ -1,9 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-icons/font/bootstrap-icons.min.css'
-import { createEffect, createSignal } from "solid-js"
+import { createSignal, useContext } from "solid-js"
 import InputCheck from './InputCheck'
-
-export default function () {
+export default function (props) {
   async function sendMessage() {
     console.log("sendmsg")
     if (!vaildData()) return
@@ -24,11 +23,16 @@ export default function () {
     console.log(response)
     if (response.status === 200) {
       setInputName("")
-      setInputManagerPwd("")
+      // setInputManagerPwd("")
       setInputExpireTime("")
       setInputPwd("")
+      setInputKey("")
+      props.handleListUser(inputManagerPwd())
     }
-
+  }
+  
+  const handleListUser = async ()=> {
+    props.handleListUser(inputManagerPwd())
   }
   /*
    校验输入的数据是否正确
@@ -36,7 +40,7 @@ export default function () {
   function vaildData() {
     const initialValue = true
     const andWithInitial = items().reduce(
-      (accumulator, currentValue) => accumulator && (currentValue.reg===undefined?true:
+      (accumulator, currentValue) => accumulator && (currentValue.reg === undefined ? true :
         currentValue.reg.test(currentValue.initValue())),
       initialValue
     )
@@ -61,7 +65,10 @@ export default function () {
         <InputCheck labelName={item.name} value={item.initValue}
           onInput={item.onValue} type={item.type} childIndex={index} reg={item.reg} tip={item.tip} />
       ))}
-      <button class="btn btn-primary" onClick={() => sendMessage()}>提交</button>
+      <button class="btn btn-primary" onClick={() => sendMessage()}>新增</button>
+      &nbsp;&nbsp;&nbsp;
+      <button class="btn btn-primary" onClick={()=>handleListUser()}>查询</button>
     </div>
+    
   )
 }
