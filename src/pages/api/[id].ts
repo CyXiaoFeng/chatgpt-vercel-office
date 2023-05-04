@@ -20,8 +20,9 @@ export const get: APIRoute = async ({ params, request }) => {
   const response:Response|undefined = isAuth(request)
   if(response !== undefined) return response
   let rslt
-  console.info(`param id->${params.id}, host = ${request.headers.get("host")}，username = ${request.headers.get("username")}`)
+  console.info(`param id->${params.id}, host = ${request.headers.get("host")}，_id = ${request.headers.get("_id")}`)
   const _id = request.headers.get("_id") || undefined
+  //用户列表
   if (params.id === "all") {
     console.info("all result")
     rslt = await (await Users()).find({}).toArray()
@@ -31,6 +32,7 @@ export const get: APIRoute = async ({ params, request }) => {
         "Content-Type": "application/json"
       }
     })
+    //删除一个用户
   } else if (params.id === "del" && _id !== undefined) {
     console.info(`delete user name id->${_id}`)
     rslt = await (await Users()).deleteOne({ _id: new ObjectId(_id) })
@@ -50,6 +52,7 @@ export const get: APIRoute = async ({ params, request }) => {
   }
 }
 
+//验收用户信息是否完整
 const checkUser = (user: { name: string | any[]; pwd: string | any[]; expireTime: string }) => {
   const regExp = /^\d{4}\/([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01]) ([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/
   return user.name.length > 0 && user.pwd.length > 0 && regExp.test(user.expireTime)
