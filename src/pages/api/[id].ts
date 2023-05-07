@@ -2,6 +2,8 @@ import type { APIRoute } from "astro"
 import { Users } from "@/utils/mongodb"
 import { ObjectId } from 'mongodb'   
 import moment from 'moment'
+import { execSync  } from "child_process"
+import * as iconv from 'iconv-lite'
 interface User {
   name: string,
   pwd: string,
@@ -17,11 +19,11 @@ async function getApiKeyByPWD(pwd: any) {
 
 
 export const get: APIRoute = async ({ params, request }) => {
-  const response:Response|undefined = isAuth(request)
-  if(response !== undefined) return response
-  let rslt
-  console.info(`param id->${params.id}, host = ${request.headers.get("host")}，_id = ${request.headers.get("_id")}`)
-  const _id = request.headers.get("_id") || undefined
+  let response:Response|undefined
+  if((response = isAuth(request)) !== undefined) return response
+  let rslt,msg="success"
+  console.info(`param id->${params.id}, host = ${request.headers.get("host")}`)
+  let _id, command, wechat, key
   //用户列表
   if (params.id === "all") {
     console.info("all result")
@@ -33,10 +35,31 @@ export const get: APIRoute = async ({ params, request }) => {
       }
     })
     //删除一个用户
-  } else if (params.id === "del" && _id !== undefined) {
+  } else if (params.id === "del" && (_id = request.headers.get("_id") || undefined) !== undefined) {
     console.info(`delete user name id->${_id}`)
     rslt = await (await Users()).deleteOne({ _id: new ObjectId(_id) })
     return new Response(JSON.stringify({ code: 200, message: "success", result: rslt }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    //执行shell命令
+  }else if(params.id === "shell" && (command = request.headers.get("command") || undefined) !== undefined) {
+    console.info(`exec shell command->${command}`)
+    wechat = request.headers.get("wechatName") || undefined
+    key = request.headers.get("key") || undefined
+    try {
+      const result = execSync(command, { encoding: 'binary' })
+      rslt = result
+    } catch(error) {
+      msg = "fail"
+      rslt = iconv.decode(Buffer.from(error.message, 'binary'), 'cp936')
+      console.error(`exec error:${rslt}`
+      )
+    }
+ 
+    return new Response(JSON.stringify({ code: 200, message: msg, result: rslt}), {
       status: 200,
       headers: {
         "Content-Type": "application/json"
@@ -64,7 +87,7 @@ export const post: APIRoute = async ({ params, request }) => {
   const response:Response|undefined = isAuth(request)
   if(response !== undefined) return response
   try {
-    if (params.id === "add") {
+    if (params.id === "add") {//新增用户
       const newuser = await request.json()
       if (!checkUser(newuser)) {
         code = 400
@@ -73,7 +96,8 @@ export const post: APIRoute = async ({ params, request }) => {
         const now = moment()
         const formattedDate = now.format('YYYY/MM/DD HH:mm:ss')
         newuser.createTime = formattedDate
-        newuser.apikey = import.meta.env.FIX_API_KEY
+        if(newuser.apikey === undefined || newuser.apikey.trim().length === 0)
+          newuser.apikey = import.meta.env.FIX_API_KEY
         console.info(`new user->${JSON.stringify(newuser)}`)
         user = await (await Users()).insertOne(newuser)
         code = 200
@@ -98,6 +122,7 @@ export const post: APIRoute = async ({ params, request }) => {
 
 }
 
+//验证管理员的身份信息
 function isAuth(request:any) {
   if (request.headers.get("Authorization") !== AUTH_CODE) {
     return new Response(JSON.stringify({ code: 401, message: "no permission" }), {

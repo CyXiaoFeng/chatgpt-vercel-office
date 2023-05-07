@@ -7,7 +7,7 @@ export default function (props) {
     const [author, setAuthor] = createSignal("")
     onMount(() => {
         props.ref({ handleQuery })
-      })
+    })
     interface Item {
         _id: string;
         name: string;
@@ -32,6 +32,25 @@ export default function (props) {
             const data = await response.json()
             console.info(data.result)
             setItems(data.result)
+        }
+    }
+    //启动微信
+    const starWechat = async (wechatName:string, key:string) =>{
+        console.info(`wechatName=${wechatName}`)
+        const options = {
+            method: 'GET',
+            headers: {
+                'Authorization': author(),
+                'Content-Type': 'application/json',
+                'command':'ls',
+                'wechatName':wechatName,
+                'key': key
+            }
+        }
+        const response = await fetch("/api/shell", options)
+        if (response.status === 200) {
+            const data = await response.json()
+            console.info(data.result)
         }
     }
     const delUserById = (id: string) => {
@@ -64,37 +83,37 @@ export default function (props) {
 
     return (
         <div class="container">
-  <table class="table table-bordered table-sm">
-        
-            <thead>
-                <tr>
-                    <th class="col-sm-1">姓名</th>
-                    <th class="col-sm-1">密码</th>
-                    <th class="col-sm-1.5">创建时间</th>
-                    <th class="col-sm-1.5">过期时间</th>
-                    <th class="col-sm-4">OPENAI KEY</th>
-                    <th class="col-sm-2">微信名称</th>
-                    <th class="col-sm-2">操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                {items().map((item) => (
+            <table class="table table-bordered table-sm">
+
+                <thead>
                     <tr>
-                        <td class="col-sm-1">{item.name}</td>
-                        <td class="col-sm-1">{item.pwd}</td>
-                        <td class="col-sm-1.5">{item.createTime}</td>
-                        <td class="col-sm-1.5">{item.expireTime}</td>
-                        <td class="col-sm-4" style="word-wrap:break-word; word-break:break-all">{item.apikey}</td>
-                        <td class="col-sm-2">{item.wechat}&nbsp;</td>
-                        <td class="col-sm-2">
-                            <button type="button" onclick={() => delUserById(item._id)} class="btn btn-primary">删除</button>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <button type="button" class="btn btn-primary">启动微信</button>
-                        </td>
+                        <th class="col-sm-1">姓名</th>
+                        <th class="col-sm-1">密码</th>
+                        <th class="col-sm-1.5">创建时间</th>
+                        <th class="col-sm-1.5">过期时间</th>
+                        <th class="col-sm-4">OPENAI KEY</th>
+                        <th class="col-sm-2">微信名称</th>
+                        <th class="col-sm-2">操作</th>
                     </tr>
-                ))}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {items().map((item) => (
+                        <tr>
+                            <td class="col-sm-1">{item.name}</td>
+                            <td class="col-sm-1">{item.pwd}</td>
+                            <td class="col-sm-1.5" style="word-wrap:break-word; word-break:break-all">{item.createTime}</td>
+                            <td class="col-sm-1.5" style="word-wrap:break-word; word-break:break-all">{item.expireTime}</td>
+                            <td class="col-sm-4" style="word-wrap:break-word; word-break:break-all">{item.apikey}</td>
+                            <td class="col-sm-2">{item.wechat}&nbsp;</td>
+                            <td class="col-sm-2">
+                                <button type="button" onclick={() => delUserById(item._id)} class="btn btn-primary">删除</button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button"  onclick={() => starWechat(item.wechat, item.apikey)} class="btn btn-primary">启动微信</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     )
 }

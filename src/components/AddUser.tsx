@@ -15,6 +15,8 @@ export default function (props) {
       body: JSON.stringify({
         name: inputName(),
         pwd: inputPwd(),
+        wechat: inputWechat(),
+        apikey: inputKey(),
         expireTime: inputExpireTime()
       })
     }
@@ -27,6 +29,7 @@ export default function (props) {
       setInputExpireTime("")
       setInputPwd("")
       setInputKey("")
+      setInputWechat("")
       props.handleListUser(inputManagerPwd())
     }
   }
@@ -48,16 +51,18 @@ export default function (props) {
   }
   const regex = /^.{4,}$/ // This regular expression matches any string with length greater than 3.
   const [inputName, setInputName] = createSignal("")
-  const [inputManagerPwd, setInputManagerPwd] = createSignal("")
+  const [inputManagerPwd, setInputManagerPwd] = createSignal("ohmygod")
   const [inputPwd, setInputPwd] = createSignal("")
   const [inputExpireTime, setInputExpireTime] = createSignal("")
+  const [inputWechat, setInputWechat] = createSignal("")
   const [inputKey, setInputKey] = createSignal("")
   const [items, setItems] = createSignal([
     { name: "管理员密码", initValue: inputManagerPwd, onValue: setInputManagerPwd, type: "text", reg: regex, tip: "默认的管理员密码" },
     { name: "用户名", initValue: inputName, onValue: setInputName, type: "text", reg: regex, tip: "不能为空且大于4个字符" },
     { name: "密码", initValue: inputPwd, onValue: setInputPwd, type: "text", reg: regex, tip: "不能为空且大于6个字符" },
     { name: "过期时间", initValue: inputExpireTime, onValue: setInputExpireTime, type: "expireTime", reg: regex, tip: "" },
-    { name: "KEY", initValue: inputKey, onValue: setInputKey, type: "text", reg: undefined, tip: "openai key,不输入则默认为系统的" }])
+    { name: "wechat", initValue: inputWechat, onValue: setInputWechat, type: "text", reg: undefined, tip: "微信信息" },
+    { name: "apikey", initValue: inputKey, onValue: setInputKey, type: "text", reg: undefined, tip: "openai key,不输入则默认为系统的" }])
 
   return (
     <div>
