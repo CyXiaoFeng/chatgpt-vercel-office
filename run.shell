@@ -1,2 +1,3 @@
 #!/bin/bash
-HOST=0.0.0.0 PORT=443 SERVER_KEY_PATH=/etc/ssl/aichut/private.key SERVER_CERT_PATH=/etc/ssl/aichut/certificate.crt node ./dist/server/entry.mjs
+export HOST=0.0.0.0 PORT=443 SERVER_CERT_PATH=/etc/ssl/aichut/certificate.crt SERVER_KEY_PATH=/etc/ssl/aichut/private.key
+nohup node ./dist/server/entry.mjs >nohup.out 2>&1 &

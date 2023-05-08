@@ -42,7 +42,6 @@ export default function (props) {
             headers: {
                 'Authorization': author(),
                 'Content-Type': 'application/json',
-                'command':'ls',
                 'wechatName':wechatName,
                 'key': key
             }

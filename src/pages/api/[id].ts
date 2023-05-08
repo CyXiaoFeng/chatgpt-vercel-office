@@ -2,7 +2,8 @@ import type { APIRoute } from "astro"
 import { Users } from "@/utils/mongodb"
 import { ObjectId } from 'mongodb'   
 import moment from 'moment'
-import { execSync  } from "child_process"
+import { execSync, spawn  } from "child_process"
+import * as fs from 'fs'
 import * as iconv from 'iconv-lite'
 interface User {
   name: string,
@@ -45,13 +46,20 @@ export const get: APIRoute = async ({ params, request }) => {
       }
     })
     //执行shell命令
-  }else if(params.id === "shell" && (command = request.headers.get("command") || undefined) !== undefined) {
-    console.info(`exec shell command->${command}`)
-    wechat = request.headers.get("wechatName") || undefined
+  }else if(params.id === "shell" && (wechat = request.headers.get("wechatName") || undefined) !== undefined
+  && (key = request.headers.get("key") || undefined) !== undefined  ) {
+    const command = './webchat.sh'
+    const params = [wechat, key]
     key = request.headers.get("key") || undefined
     try {
-      const result = execSync(command, { encoding: 'binary' })
-      rslt = result
+      const out = fs.openSync('./out.log', 'a')
+      const err = fs.openSync('./out.log', 'a')
+      const subprocess = spawn(command, params, {
+        cwd:'/usr/local/webchat/',
+        detached: true,
+        stdio: [ 'ignore', out, err ],
+      })
+      subprocess.unref()
     } catch(error) {
       msg = "fail"
       rslt = iconv.decode(Buffer.from(error.message, 'binary'), 'cp936')
