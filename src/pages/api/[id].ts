@@ -57,25 +57,18 @@ export const get: APIRoute = async ({ params, request }) => {
       const err = fs.openSync('./out.log', 'a')
       const subprocess = spawn(command, params, {
         cwd: cwd,
-        detached: true,
-        stdio: ['ignore', out, err],
+        detached: true
+        // stdio: ['ignore', out, err],
       })
       subprocess.unref()
-      const bufferSize = 1024
-      const buffer = Buffer.alloc(bufferSize)
-      let bytesRead = 0
-      let content = ''
-      while (bytesRead = fs.readSync(out, buffer, 0, bufferSize)) {
-        // 将读取到的内容转为字符串
-        content += buffer.toString('utf8', 0, bytesRead)
-        // 如果读取到需要的内容，则停止读取
-        if (content.includes('Result:')) {
-          break
-        }
-      }
+      subprocess.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`)
+      })
+      subprocess.on('close', (code) => {
+        console.log(`child process exited with code ${code}`)
+      })
       // 关闭文件描述符
       fs.closeSync(out)
-      rslt = content
     } catch (error) {
       msg = "fail"
       rslt = iconv.decode(Buffer.from(error.message, 'binary'), 'cp936')
