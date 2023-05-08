@@ -1,8 +1,8 @@
 import type { APIRoute } from "astro"
 import { Users } from "@/utils/mongodb"
-import { ObjectId } from 'mongodb'   
+import { ObjectId } from 'mongodb'
 import moment from 'moment'
-import { execSync, spawn  } from "child_process"
+import { execSync, spawn } from "child_process"
 import * as fs from 'fs'
 import * as iconv from 'iconv-lite'
 interface User {
@@ -20,9 +20,9 @@ async function getApiKeyByPWD(pwd: any) {
 
 
 export const get: APIRoute = async ({ params, request }) => {
-  let response:Response|undefined
-  if((response = isAuth(request)) !== undefined) return response
-  let rslt,msg="success"
+  let response: Response | undefined
+  if ((response = isAuth(request)) !== undefined) return response
+  let rslt, msg = "success"
   console.info(`param id->${params.id}, host = ${request.headers.get("host")}`)
   let _id, command, wechat, key
   //用户列表
@@ -46,28 +46,43 @@ export const get: APIRoute = async ({ params, request }) => {
       }
     })
     //执行shell命令
-  }else if(params.id === "shell" && (wechat = request.headers.get("wechatName") || undefined) !== undefined
-  && (key = request.headers.get("key") || undefined) !== undefined  ) {
+  } else if (params.id === "shell" && (wechat = request.headers.get("wechatName") || undefined) !== undefined
+    && (key = request.headers.get("key") || undefined) !== undefined) {
     const command = './webchat.sh'
+    const cwd = '/usr/local/webchat/'
     const params = [wechat, key]
     key = request.headers.get("key") || undefined
     try {
       const out = fs.openSync('./out.log', 'a')
       const err = fs.openSync('./out.log', 'a')
       const subprocess = spawn(command, params, {
-        cwd:'/usr/local/webchat/',
+        cwd: cwd,
         detached: true,
-        stdio: [ 'ignore', out, err ],
+        stdio: ['ignore', out, err],
       })
       subprocess.unref()
-    } catch(error) {
+      const bufferSize = 1024
+      const buffer = Buffer.alloc(bufferSize)
+      let bytesRead = 0
+      let content = ''
+      while (bytesRead = fs.readSync(out, buffer, 0, bufferSize)) {
+        // 将读取到的内容转为字符串
+        content += buffer.toString('utf8', 0, bytesRead)
+        // 如果读取到需要的内容，则停止读取
+        if (content.includes('Result:')) {
+          break
+        }
+      }
+      // 关闭文件描述符
+      fs.closeSync(out)
+      rslt = content
+    } catch (error) {
       msg = "fail"
       rslt = iconv.decode(Buffer.from(error.message, 'binary'), 'cp936')
       console.error(`exec error:${rslt}`
       )
     }
- 
-    return new Response(JSON.stringify({ code: 200, message: msg, result: rslt}), {
+    return new Response(JSON.stringify({ code: 200, message: msg, result: rslt }), {
       status: 200,
       headers: {
         "Content-Type": "application/json"
@@ -92,8 +107,8 @@ const checkUser = (user: { name: string | any[]; pwd: string | any[]; expireTime
 export const post: APIRoute = async ({ params, request }) => {
   let user
   let code = 200, message
-  const response:Response|undefined = isAuth(request)
-  if(response !== undefined) return response
+  const response: Response | undefined = isAuth(request)
+  if (response !== undefined) return response
   try {
     if (params.id === "add") {//新增用户
       const newuser = await request.json()
@@ -104,7 +119,7 @@ export const post: APIRoute = async ({ params, request }) => {
         const now = moment()
         const formattedDate = now.format('YYYY/MM/DD HH:mm:ss')
         newuser.createTime = formattedDate
-        if(newuser.apikey === undefined || newuser.apikey.trim().length === 0)
+        if (newuser.apikey === undefined || newuser.apikey.trim().length === 0)
           newuser.apikey = import.meta.env.FIX_API_KEY
         console.info(`new user->${JSON.stringify(newuser)}`)
         user = await (await Users()).insertOne(newuser)
@@ -131,7 +146,7 @@ export const post: APIRoute = async ({ params, request }) => {
 }
 
 //验证管理员的身份信息
-function isAuth(request:any) {
+function isAuth(request: any) {
   if (request.headers.get("Authorization") !== AUTH_CODE) {
     return new Response(JSON.stringify({ code: 401, message: "no permission" }), {
       status: 401,
@@ -139,6 +154,6 @@ function isAuth(request:any) {
         "Content-Type": "application/json"
       }
     })
-  } 
+  }
   return undefined
 }
