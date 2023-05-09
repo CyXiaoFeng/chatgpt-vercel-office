@@ -47,7 +47,9 @@ server.listen(3232,function listening() {
   const url = `wss://localhost:${server.address().port}`
   console.info(url)
   const ws = new WebSocket(url, {
-    rejectUnauthorized: false
+    rejectUnauthorized: false,
+    perMessageDeflate: false,
+    secureProtocol: 'TLSv1_2_method'
   })
 
   ws.on('error', console.error)
