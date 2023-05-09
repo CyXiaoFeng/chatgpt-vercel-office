@@ -108,10 +108,10 @@ export default function (props) {
                         <tr>
                             <td class="col-sm-1">{item.name}</td>
                             <td class="col-sm-1">{item.pwd}</td>
-                            <td class="col-sm-1.5" style="word-wrap:break-word word-break:break-all">{item.createTime}</td>
-                            <td class="col-sm-1.5" style="word-wrap:break-word word-break:break-all">{item.expireTime}</td>
-                            <td class="col-sm-4" style="word-wrap:break-word word-break:break-all">{item.apikey}</td>
-                            <td class="col-sm-2">{item.wechat}&nbsp</td>
+                            <td class="col-sm-1.5" style="word-wrap:break-word; word-break:break-all">{item.createTime}</td>
+                            <td class="col-sm-1.5" style="word-wrap:break-word; word-break:break-all">{item.expireTime}</td>
+                            <td class="col-sm-4" style="word-wrap:break-word; word-break:break-all">{item.apikey}</td>
+                            <td class="col-sm-2">{item.wechat}</td>
                             <td class="col-sm-2">
                                 <button type="button" onclick={() => delUserById(item._id)} class="btn btn-primary">删除</button>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
