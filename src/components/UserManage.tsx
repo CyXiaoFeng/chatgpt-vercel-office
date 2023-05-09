@@ -4,7 +4,7 @@ import { createSignal, useContext, createContext } from "solid-js"
 import AddUser from '@/components/AddUser'
 import ListUser from '@/components/ListUser'
 export const MyContext = createContext()
-export default function () {
+export default function (props) {
     const [bRef, setBRef] = createSignal(null)
     const handleListUser = (author: string) => {
         if (author.trim().length === 0) return
@@ -15,7 +15,7 @@ export default function () {
             <main class="before py-2em">
                 <AddUser handleListUser={handleListUser} />
             </main>
-                <ListUser ref={setBRef} />
+                <ListUser ref={setBRef} platform={props.platform}/>
         </div>
     )
 }

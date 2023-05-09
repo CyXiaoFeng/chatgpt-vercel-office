@@ -56,21 +56,22 @@ export const get: APIRoute = async ({ params, request }) => {
       try {
         const out = fs.openSync('./out.log', 'a')
         const err = fs.openSync('./out.log', 'a')
-        const subprocess = spawn(command, params, {
-          cwd: cwd,
-          detached: true
-          // stdio: ['ignore', out, err],
-        })
-        subprocess.unref()
-        subprocess.stdout.on('data', (data) => {
-          console.log(`stdout: ${data}`)
-          send(data)
-        })
-        subprocess.on('close', (code) => {
-          console.log(`child process exited with code ${code}`)
-        })
-        // 关闭文件描述符
-        fs.closeSync(out)
+        send("get message")
+        // const subprocess = spawn(command, params, {
+        //   cwd: cwd,
+        //   detached: true
+        //   // stdio: ['ignore', out, err],
+        // })
+        // subprocess.unref()
+        // subprocess.stdout.on('data', (data) => {
+        //   console.log(`stdout: ${data}`)
+        //   send(data)
+        // })
+        // subprocess.on('close', (code) => {
+        //   console.log(`child process exited with code ${code}`)
+        // })
+        // // 关闭文件描述符
+        // fs.closeSync(out)
       } catch (error) {
         msg = "fail"
         rslt = iconv.decode(Buffer.from(error.message, 'binary'), 'cp936')
