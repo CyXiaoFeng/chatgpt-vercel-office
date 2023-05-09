@@ -114,7 +114,7 @@ export default function (props) {
                             <td class="col-sm-2">{item.wechat}&nbsp</td>
                             <td class="col-sm-2">
                                 <button type="button" onclick={() => delUserById(item._id)} class="btn btn-primary">删除</button>
-                                &nbsp&nbsp&nbsp&nbsp
+                                &nbsp;&nbsp;&nbsp;&nbsp;
                                 <button type="button" onclick={() => starWechat(item.wechat, item.apikey)} class="btn btn-primary">启动微信</button>
                             </td>
                         </tr>
