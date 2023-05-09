@@ -46,7 +46,7 @@ export default function (props) {
                 'key': key
             }
         }
-        const ws = new WebSocket('ws://192.168.3.211:3232')
+        const ws = new WebSocket('wss://www.aichut.com')
         ws.onopen = function() {
             console.log('WebSocket connected')
         }

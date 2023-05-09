@@ -1,5 +1,6 @@
 import { WebSocketServer } from "ws"
-const WSS = new WebSocketServer({ port: 3232 })
+import { PreviewServer } from 'astro'
+const WSS = new WebSocketServer({ noServer :true })
 let ws: WebSocket | null = null
 const wsc = (socket:WebSocket) => {
   console.log('we are connected')
