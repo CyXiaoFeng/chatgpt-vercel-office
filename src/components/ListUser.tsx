@@ -47,10 +47,10 @@ export default function (props) {
             }
         }
         let ws
-        if(props.platform === "Linux") {
-             ws = new WebSocket('wss://www.aichut.com')
+        if(props.platform === "win32") {
+            ws = new WebSocket('ws://192.168.3.211:8080')
         } else {
-             ws = new WebSocket('ws://192.168.3.211:8080')
+            ws = new WebSocket('wss://www.aichut.com')
         }
         ws.onopen = function() {
             console.log('WebSocket connected')

@@ -15,8 +15,12 @@ const wsc = (socket: WebSocket) => {
   ws = socket
 }
 let WSS: WebSocketServer//= new WebSocketServer({ server })
-if (platform === 'Linux') {
-  console.log('Linux')
+if (platform === 'win32') {
+  console.log('Windows')
+  WSS = new WebSocketServer({ port: 8080 })
+  WSS.on('connection', wsc)
+} else {
+  console.log('linux')
   const server = createServer({
     cert: readFileSync('/etc/ssl/aichut/certificate.crt'),
     key: readFileSync('/etc/ssl/aichut/private.key')
@@ -25,10 +29,7 @@ if (platform === 'Linux') {
   WSS = new WebSocketServer({ server })
   WSS.on('connection', wsc)
   server.listen(8080)
-} else {
-  console.log('Windows')
-   WSS = new WebSocketServer({ port: 8080 })
-  WSS.on('connection', wsc)
+  
 }
 export const send = (msg: string) => {
   if (ws !== null) {
