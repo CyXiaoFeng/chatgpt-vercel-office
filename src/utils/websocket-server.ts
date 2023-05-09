@@ -1,4 +1,4 @@
-import { WebSocketServer } from "ws"
+import { WebSocketServer,WebSocket } from "ws"
 import { platform } from 'node:process'
 import { createServer } from 'http'
 import { readFileSync } from 'fs'
