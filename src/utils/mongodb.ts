@@ -28,11 +28,11 @@ export const getDB = async () => {
 
 export const Users = async () => {
   const db = await getDB()
-  console.info(`is first initdb?${global.initDB === 0?"first":"many"}`)
+  // console.info(`is first initdb?${global.initDB === 0?"first":"many"}`)
   if(global.initDB === 0) {
     process.env.IS_FIRST_INIT_MONGODB = 1
     global.initDB = 1
-    console.info(global.initDB)
+    // console.info(global.initDB)
     await db.collection("users").createIndex({pwd:1},{unique:true})
   } 
     return db.collection("users")

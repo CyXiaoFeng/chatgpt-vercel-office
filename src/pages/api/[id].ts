@@ -5,6 +5,7 @@ import moment from 'moment'
 import { execSync, spawn } from "child_process"
 import * as fs from 'fs'
 import * as iconv from 'iconv-lite'
+import { send } from "@/utils/websocket-server"
 interface User {
   name: string,
   pwd: string,
@@ -18,70 +19,79 @@ async function getApiKeyByPWD(pwd: any) {
   return apiKey === null ? apiKey : "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"
 }
 
-
 export const get: APIRoute = async ({ params, request }) => {
   let response: Response | undefined
   if ((response = isAuth(request)) !== undefined) return response
   let rslt, msg = "success"
   console.info(`param id->${params.id}, host = ${request.headers.get("host")}`)
   let _id, command, wechat, key
-  //用户列表
-  if (params.id === "all") {
-    console.info("all result")
-    rslt = await (await Users()).find({}).toArray()
-    return new Response(JSON.stringify({ code: 200, message: "success", result: rslt }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json"
+  try {
+    //用户列表
+    if (params.id === "all") {
+      console.info("all result")
+      rslt = await (await Users()).find({}).toArray()
+      return new Response(JSON.stringify({ code: 200, message: "success", result: rslt }), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      //删除一个用户
+    } else if (params.id === "del" && (_id = request.headers.get("_id") || undefined) !== undefined) {
+      console.info(`delete user name id->${_id}`)
+      rslt = await (await Users()).deleteOne({ _id: new ObjectId(_id) })
+      return new Response(JSON.stringify({ code: 200, message: "success", result: rslt }), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      //执行shell命令
+    } else if (params.id === "shell" && (wechat = request.headers.get("wechatName") || undefined) !== undefined
+      && (key = request.headers.get("key") || undefined) !== undefined) {
+      const command = './webchat.sh'
+      const cwd = '/usr/local/webchat/'
+      const params = [wechat, key]
+      key = request.headers.get("key") || undefined
+      try {
+        const out = fs.openSync('./out.log', 'a')
+        const err = fs.openSync('./out.log', 'a')
+        const subprocess = spawn(command, params, {
+          cwd: cwd,
+          detached: true
+          // stdio: ['ignore', out, err],
+        })
+        subprocess.unref()
+        subprocess.stdout.on('data', (data) => {
+          console.log(`stdout: ${data}`)
+          send(data)
+        })
+        subprocess.on('close', (code) => {
+          console.log(`child process exited with code ${code}`)
+        })
+        // 关闭文件描述符
+        fs.closeSync(out)
+      } catch (error) {
+        msg = "fail"
+        rslt = iconv.decode(Buffer.from(error.message, 'binary'), 'cp936')
+        console.error(`exec error:${rslt}`
+        )
       }
-    })
-    //删除一个用户
-  } else if (params.id === "del" && (_id = request.headers.get("_id") || undefined) !== undefined) {
-    console.info(`delete user name id->${_id}`)
-    rslt = await (await Users()).deleteOne({ _id: new ObjectId(_id) })
-    return new Response(JSON.stringify({ code: 200, message: "success", result: rslt }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-    //执行shell命令
-  } else if (params.id === "shell" && (wechat = request.headers.get("wechatName") || undefined) !== undefined
-    && (key = request.headers.get("key") || undefined) !== undefined) {
-    const command = './webchat.sh'
-    const cwd = '/usr/local/webchat/'
-    const params = [wechat, key]
-    key = request.headers.get("key") || undefined
-    try {
-      const out = fs.openSync('./out.log', 'a')
-      const err = fs.openSync('./out.log', 'a')
-      const subprocess = spawn(command, params, {
-        cwd: cwd,
-        detached: true
-        // stdio: ['ignore', out, err],
+      return new Response(JSON.stringify({ code: 200, message: msg, result: rslt }), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json"
+        }
       })
-      subprocess.unref()
-      subprocess.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`)
+    } else {
+      return new Response(JSON.stringify({ code: 400, message: "request error" }), {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json"
+        }
       })
-      subprocess.on('close', (code) => {
-        console.log(`child process exited with code ${code}`)
-      })
-      // 关闭文件描述符
-      fs.closeSync(out)
-    } catch (error) {
-      msg = "fail"
-      rslt = iconv.decode(Buffer.from(error.message, 'binary'), 'cp936')
-      console.error(`exec error:${rslt}`
-      )
     }
-    return new Response(JSON.stringify({ code: 200, message: msg, result: rslt }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-  } else {
+  } catch (error) {
     return new Response(JSON.stringify({ code: 400, message: "request error" }), {
       status: 400,
       headers: {

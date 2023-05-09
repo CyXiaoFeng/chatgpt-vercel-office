@@ -40,12 +40,14 @@ const adapter = () => {
   }
 }
 const serverStart = ()=> {
-  const WSS = new WebSocketServer({ port: 8080 })
+  const WSS = new WebSocketServer({ port: 3232 })
   WSS.on('connection', function connection(ws) {
     console.log('WebSocket connected')
+
     ws.on('message', function incoming(message) {
       console.log('received: %s', message)
     })
+
     ws.send('Hello, WebSocket!')
   })
 }
@@ -65,11 +67,12 @@ export default defineConfig({
       ]
     }),
     solidJs(),
-    // serverStart()
+    serverStart()
   ],
   output: "server",
   adapter: envAdapter(),
   server: { port: 80},
+
   vite: {
     plugins: [
       process.env.OUTPUT === 'vercel' && disableBlocks(),
@@ -125,14 +128,17 @@ export default defineConfig({
         server: {
           port: 8080,
           // 在 Vite 启动时创建 WebSocket 服务
-           onHttpServerCreated(server) {
+          async onHttpServerCreated(server) {
             const wss = new WebSocketServer({ server })
             console.log('WebSocket server started')
+      
             wss.on('connection', function connection(ws) {
               console.log('WebSocket connected')
+      
               ws.on('message', function incoming(message) {
                 console.log('received: %s', message)
               })
+      
               ws.send('Hello, WebSocket!')
             })
           },

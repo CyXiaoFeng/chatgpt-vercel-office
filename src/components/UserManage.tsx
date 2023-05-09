@@ -3,8 +3,6 @@ import 'bootstrap-icons/font/bootstrap-icons.min.css'
 import { createSignal, useContext, createContext } from "solid-js"
 import AddUser from '@/components/AddUser'
 import ListUser from '@/components/ListUser'
-
-
 export const MyContext = createContext()
 export default function () {
     const [bRef, setBRef] = createSignal(null)
