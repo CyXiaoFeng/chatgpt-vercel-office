@@ -29,8 +29,8 @@ if (platform === 'win32') {
 } else {
   console.log('init websocket for linux')
   const server = createServer({
-    cert: readFileSync('/etc/ssl/aichut/certificate.crt'),
-    key: readFileSync('/etc/ssl/aichut/private.key')
+    cert: readFileSync('/etc/ssl/aichut/certificate.pem'),
+    key: readFileSync('/etc/ssl/aichut/private.pem')
 
   })
   
