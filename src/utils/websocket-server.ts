@@ -43,7 +43,7 @@ wss.on('connection', function connection(ws) {
     console.log(msg.toString())
   })
 })
-server.listen(3232,function listening() {
+server.listen(443,function listening() {
   const url = `wss://localhost:${server.address().port}`
   console.info(url)
   const ws = new WebSocket(url, {
