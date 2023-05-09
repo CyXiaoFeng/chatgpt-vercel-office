@@ -44,7 +44,9 @@ wss.on('connection', function connection(ws) {
   })
 })
 server.listen(function listening() {
-  const ws = new WebSocket(`wss://localhost:${server.address().port}`, {
+  const url = `wss://localhost:${server.address().port}`
+  console.info(url)
+  const ws = new WebSocket(url, {
     rejectUnauthorized: false
   })
 
