@@ -14,6 +14,7 @@ import {
 import solidJs from "@astrojs/solid-js"
 import { VitePWA } from 'vite-plugin-pwa'
 import { WebSocketServer } from 'ws'
+import { send } from "./src/utils/websocket-server"
 const envAdapter = () => {
   if (process.env.OUTPUT === 'vercel') {
     return vercel()
@@ -39,15 +40,17 @@ const adapter = () => {
     })
   }
 }
-const serverStart = ()=> {
-  const WSS = new WebSocketServer({ port: 8080 })
-  WSS.on('connection', function connection(ws) {
-    console.log('WebSocket connected')
-    ws.on('message', function incoming(message) {
-      console.log('received: %s', message)
-    })
-    ws.send('Hello, WebSocket!')
-  })
+const serverStart = async ()=> {
+  console.info("start")
+  // send("hello")
+  // const WSS = new WebSocketServer({ port: 8080 })
+  // WSS.on('connection', function connection(ws) {
+  //   console.log('WebSocket connected')
+  //   ws.on('message', function incoming(message) {
+  //     console.log('received: %s', message)
+  //   })
+  //   ws.send('Hello, WebSocket!')
+  // })
 }
 // https://astro.build/config
 export default defineConfig({
@@ -65,7 +68,7 @@ export default defineConfig({
       ]
     }),
     solidJs(),
-    // serverStart()
+    await serverStart()
   ],
   output: "server",
   adapter: envAdapter(),

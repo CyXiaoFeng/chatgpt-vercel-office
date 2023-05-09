@@ -4,7 +4,7 @@ import Layout from "~/layouts/Layout.astro"
 import "~/styles/global.css"
 import { send } from "@/utils/websocket-server"
 import { platform } from 'node:process'
-send("init socket")
+// send("init socket")
 ---
 <Layout title="ChatGPT">
     <UserManage platform={platform}

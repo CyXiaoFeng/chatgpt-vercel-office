@@ -1,35 +1,61 @@
 import { WebSocketServer } from "ws"
 import { platform } from 'node:process'
-import { createServer } from 'https'
+import { createServer } from 'http'
 import { readFileSync } from 'fs'
 let ws: WebSocket | null = null
-const wsc = (socket: WebSocket) => {
-  console.log('we are connected')
-  socket.on('message', (message: string) => {
-    console.log('received: %s', message)
-    // ws.send(`You said: ${message}`)
-  })
-  socket.on('close', function close() {
-    console.log('client disconnected')
-  })
-  ws = socket
-}
-let WSS: WebSocketServer//= new WebSocketServer({ server })
+let wss: WebSocketServer
+
 if (platform === 'win32') {
-  console.log('Windows')
-  WSS = new WebSocketServer({ port: 8080 })
-  WSS.on('connection', wsc)
+  console.log('init websocket for Windows')
+  const server = createServer()
+  const wss = new WebSocketServer({ noServer: true })
+
+  wss.on('connection', function connection(ws, request) {
+    ws.on('error', console.error)
+
+    ws.on('message', function message(data) {
+      console.log(`Received message ${data} from user `)
+      ws.send("Have already received the message")
+    })
+  })
+  server.on('upgrade', function upgrade(request, socket, head) {
+
+    wss.handleUpgrade(request, socket, head, function done(ws) {
+      wss.emit('connection', ws, request)
+    })
+  })
+  server.listen(8080)
+
 } else {
-  console.log('linux')
+  console.log('init websocket for linux')
   const server = createServer({
     cert: readFileSync('/etc/ssl/aichut/certificate.crt'),
     key: readFileSync('/etc/ssl/aichut/private.key')
 
   })
-  WSS = new WebSocketServer({ server })
-  WSS.on('connection', wsc)
-  server.listen(8080)
   
+const wss = new WebSocketServer({ server })
+
+wss.on('connection', function connection(ws) {
+  ws.on('error', console.error)
+
+  ws.on('message', function message(msg) {
+    console.log(msg.toString())
+  })
+})
+server.listen(function listening() {
+  const ws = new WebSocket(`wss://localhost:${server.address().port}`, {
+    rejectUnauthorized: false
+  })
+
+  ws.on('error', console.error)
+
+  ws.on('open', function open() {
+    ws.send('All glory to WebSockets!')
+  })
+
+})
+
 }
 export const send = (msg: string) => {
   if (ws !== null) {
