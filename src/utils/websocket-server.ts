@@ -2,7 +2,6 @@ import { WebSocketServer, WebSocket } from "ws"
 import { platform } from 'node:process'
 import { createServer } from 'https'
 import { readFileSync } from 'fs'
-let wss: WebSocketServer
 const server = createServer({
   cert: readFileSync(platform === 'win32'?'G:\\ssl\\localhost.crt':'/etc/ssl/aichut/certificate.pem'),
   key: readFileSync(platform === 'win32'?'G:\\ssl\\localhost.key':'/etc/ssl/aichut/private.pem')
