@@ -26,7 +26,7 @@ export const initsocket = () => {
 
     })
   }
-    global.wss = new WebSocketServer({ server })
+    global.wss = new WebSocketServer({ global.server })
     wss.on('connection', function connection(ws) {
       global.ws = ws
       ws.on('error', console.error)
@@ -34,7 +34,6 @@ export const initsocket = () => {
         console.log(msg.toString())
       })
     })
-    const DomainName = import.meta.env.WEBSOCKET_SSL_URI
     server.listen(3232, function listening() {
       dotenv.config()
       const url = process.env.WEBSOCKET_SSL_URI

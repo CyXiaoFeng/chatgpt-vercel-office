@@ -3,7 +3,6 @@ import { Users } from "@/utils/mongodb"
 import { ObjectId } from 'mongodb'
 import moment from 'moment'
 import { execSync, spawn } from "child_process"
-import * as fs from 'fs'
 import * as iconv from 'iconv-lite'
 import { send } from "@/utils/websocket-server"
 interface User {
@@ -12,7 +11,7 @@ interface User {
   createTime: string,
   expireTime: string
 }
-const AUTH_CODE = import.meta.env.AUTH_CODE
+
 async function getApiKeyByPWD(pwd: any) {
   const apiKey = await (await Users()).findOne({ pwd: pwd })
   console.error(`apikey from db=${apiKey}`)
@@ -147,7 +146,9 @@ export const post: APIRoute = async ({ params, request }) => {
 
 //验证管理员的身份信息
 function isAuth(request: any) {
-  if (request.headers.get("Authorization") !== AUTH_CODE) {
+  const authCode = import.meta.env.AUTH_CODE
+  console.info(`local authCode = ${authCode}`)
+  if (request.headers.get("Authorization") !== authCode) {
     return new Response(JSON.stringify({ code: 401, message: "no permission" }), {
       status: 401,
       headers: {
