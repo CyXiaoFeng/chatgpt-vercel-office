@@ -41,7 +41,7 @@ const adapter = () => {
     })
   }
 }
-const serverStart = async ()=> {
+const serverStart = ()=> {
   console.info("start websocket")
   // initsocket()
 }
@@ -65,7 +65,7 @@ export default defineConfig({
       ]
     }),
     solidJs(),
-    await serverStart()
+    serverStart()
   ],
   output: "server",
   adapter: envAdapter(),
