@@ -43,7 +43,7 @@ const adapter = () => {
 }
 const serverStart = ()=> {
   console.info("start websocket")
-  // initsocket()
+  initsocket()
 }
 // https://astro.build/config
 export default defineConfig({
