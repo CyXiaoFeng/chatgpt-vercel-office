@@ -23,10 +23,9 @@ export const initsocket = () => {
     global.server = createServer({
       cert: readFileSync('/etc/ssl/aichut/certificate.pem'),
       key: readFileSync('/etc/ssl/aichut/private.pem')
-
     })
   }
-    global.wss = new WebSocketServer({ global.server })
+    global.wss = new WebSocketServer({ server:global.server })
     wss.on('connection', function connection(ws) {
       global.ws = ws
       ws.on('error', console.error)
