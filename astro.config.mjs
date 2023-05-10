@@ -13,9 +13,7 @@ import {
 } from "unocss"
 import solidJs from "@astrojs/solid-js"
 import { VitePWA } from 'vite-plugin-pwa'
-import { initsocket } from "./src/utils/websocket-server"
-
-
+import { send } from "./src/utils/websocket-server"
 const envAdapter = () => {
   if (process.env.OUTPUT === 'vercel') {
     return vercel()
@@ -43,7 +41,7 @@ const adapter = () => {
 }
 const serverStart = ()=> {
   console.info("start websocket")
-  // initsocket()
+  send()
 }
 // https://astro.build/config
 export default defineConfig({

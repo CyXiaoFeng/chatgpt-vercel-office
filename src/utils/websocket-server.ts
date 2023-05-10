@@ -37,9 +37,11 @@ let lws
     })
 // }
 export const send = (msg: string) => {
-  if (lws !== null) {
+  if (lws !== null && lws !== undefined) {
     console.info(`send msg=${msg}`)
     lws.send(msg)
+  } else {
+    console.info("web socket not ready")
   }
 
 }
