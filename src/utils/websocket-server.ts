@@ -11,7 +11,7 @@ export const initsocket = ()=>{
     cert: readFileSync(platform === 'win32'?'G:\\ssl\\localhost.crt':'/etc/ssl/aichut/certificate.pem'),
     key: readFileSync(platform === 'win32'?'G:\\ssl\\localhost.key':'/etc/ssl/aichut/private.pem')
   })
-    wss = new WebSocketServer({ server })
+    global.wss = new WebSocketServer({ server })
     wss.on('connection', function connection(ws) {
       global.ws = ws
       ws.on('error', console.error)
