@@ -37,6 +37,9 @@ dependencies:
   bootstrap-icons:
     specifier: ^1.10.5
     version: registry.npmmirror.com/bootstrap-icons@1.10.5
+  dotenv:
+    specifier: ^16.0.3
+    version: registry.npmmirror.com/dotenv@16.0.3
   eslint:
     specifier: ^8.36.0
     version: registry.npmmirror.com/eslint@8.36.0
@@ -6827,6 +6830,13 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       esutils: registry.npmmirror.com/esutils@2.0.3
+
+  registry.npmmirror.com/dotenv@16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/dotenv/-/dotenv-16.0.3.tgz}
+    name: dotenv
+    version: 16.0.3
+    engines: {node: '>=12'}
+    dev: false
 
   registry.npmmirror.com/duration@0.2.2:
     resolution: {integrity: sha512-06kgtea+bGreF5eKYgI/36A6pLXggY7oR4p1pq4SmdFBn1ReOL5D8RhG64VrqfTTKNucqqtBAwEj8aB88mcqrg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/duration/-/duration-0.2.2.tgz}

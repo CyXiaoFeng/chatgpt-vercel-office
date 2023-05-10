@@ -15,7 +15,7 @@ export default function (props) {
             <main class="before py-2em">
                 <AddUser handleListUser={handleListUser} />
             </main>
-                <ListUser ref={setBRef} platform={props.platform}/>
+                <ListUser ref={setBRef} platform={props.platform} wssURI={props.wssURI}/>
         </div>
     )
 }

@@ -6,7 +6,13 @@ export default function (props) {
     const [author, setAuthor] = createSignal("")
     onMount(() => {
         props.ref({ handleQuery })
-
+        const ws = new WebSocket(props.wssURI)
+        ws.onopen = function() {
+            console.log('WebSocket connected')
+        }
+        ws.onmessage = function(event) {
+            console.log('received: %s', event.data)
+        }
     })
     interface Item {
         _id: string
@@ -46,18 +52,7 @@ export default function (props) {
                 'key': key
             }
         }
-        let ws
-        if(props.platform === "win32") {
-            ws = new WebSocket('ws://192.168.3.211:8080')
-        } else {
-            ws = new WebSocket('wss://www.aichut.com')
-        }
-        ws.onopen = function() {
-            console.log('WebSocket connected')
-        }
-        ws.onmessage = function(event) {
-            console.log('received: %s', event.data)
-        }
+        
         const response = await fetch("/api/shell", options)
         if (response.status === 200) {
             const data = await response.json()

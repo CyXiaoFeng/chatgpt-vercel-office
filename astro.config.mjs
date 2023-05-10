@@ -13,8 +13,9 @@ import {
 } from "unocss"
 import solidJs from "@astrojs/solid-js"
 import { VitePWA } from 'vite-plugin-pwa'
-import { WebSocketServer } from 'ws'
-import { send } from "./src/utils/websocket-server"
+import { initsocket } from "./src/utils/websocket-server"
+
+
 const envAdapter = () => {
   if (process.env.OUTPUT === 'vercel') {
     return vercel()
@@ -41,19 +42,15 @@ const adapter = () => {
   }
 }
 const serverStart = async ()=> {
-  console.info("start")
-  // send("hello")
-  // const WSS = new WebSocketServer({ port: 8080 })
-  // WSS.on('connection', function connection(ws) {
-  //   console.log('WebSocket connected')
-  //   ws.on('message', function incoming(message) {
-  //     console.log('received: %s', message)
-  //   })
-  //   ws.send('Hello, WebSocket!')
-  // })
+  console.info("start websocket")
+  initsocket()
 }
 // https://astro.build/config
 export default defineConfig({
+  onServerStart({ app, server }) {
+    const { address, port } = server.address()
+    console.log(`已经启动完了服务，服务的端口是 ${port}，IP是 ${address}`)
+  },
   integrations: [
     unocss({
       presets: [
@@ -125,26 +122,10 @@ export default defineConfig({
           installPrompt: true,
           periodicSyncForUpdates: 20,
         },
-        server: {
-          port: 8080,
-          // 在 Vite 启动时创建 WebSocket 服务
-           onHttpServerCreated(server) {
-            const wss = new WebSocketServer({ server })
-            console.log('WebSocket server started')
-            wss.on('connection', function connection(ws) {
-              console.log('WebSocket connected')
-              ws.on('message', function incoming(message) {
-                console.log('received: %s', message)
-              })
-              ws.send('Hello, WebSocket!')
-            })
-          },
-        },
       })
     ],
     build: {
       chunkSizeWarningLimit: 1600,
     },
-    
   },
 })

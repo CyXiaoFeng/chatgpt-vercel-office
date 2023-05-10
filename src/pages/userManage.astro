@@ -2,12 +2,10 @@
 import UserManage from '@/components/UserManage'
 import Layout from "~/layouts/Layout.astro"
 import "~/styles/global.css"
-import { send } from "@/utils/websocket-server"
 import { platform } from 'node:process'
-// send("init socket")
+const wssURI = import.meta.env.WEBSOCKET_SSL_URI
 ---
 <Layout title="ChatGPT">
-    <UserManage platform={platform}
+    <UserManage platform={platform} wssURI={wssURI}
     client:visible/>
-    
 </Layout>
