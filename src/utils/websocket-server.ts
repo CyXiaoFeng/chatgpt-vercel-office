@@ -2,6 +2,7 @@ import { WebSocketServer, WebSocket } from "ws"
 import { platform } from 'node:process'
 import { createServer } from 'https'
 import { readFileSync } from 'fs'
+export const initsocket = ()=>{
 const server = createServer({
   cert: readFileSync(platform === 'win32'?'G:\\ssl\\localhost.crt':'/etc/ssl/aichut/certificate.pem'),
   key: readFileSync(platform === 'win32'?'G:\\ssl\\localhost.key':'/etc/ssl/aichut/private.pem')
@@ -32,7 +33,7 @@ const server = createServer({
     })
 
   })
-
+}
 export const send = (msg: string) => {
   if (ws !== null) {
     console.info(`send msg=${msg}`)
