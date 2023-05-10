@@ -53,21 +53,19 @@ export const get: APIRoute = async ({ params, request }) => {
       const params = [wechat, key]
       key = request.headers.get("key") || undefined
       try {
-        // const subprocess = spawn(command, params, {
-        //   cwd: cwd,
-        //   detached: true
-        //   // stdio: ['ignore', out, err],
-        // })
-        send('from shell')
-        // subprocess.unref()
-        // subprocess.stdout.on('data', (data) => {
-        //   console.log(`stdout: ${data}`)
-        //   send(data)
-        // })
-        // subprocess.on('close', (code) => {
-        //   console.log(`child process exited with code ${code}`)
-        // })
-        // 关闭文件描述符
+        const subprocess = spawn(command, params, {
+          cwd: cwd,
+          detached: true
+          // stdio: ['ignore', out, err],
+        })
+        subprocess.unref()
+        subprocess.stdout.on('data', (data) => {
+          console.log(`stdout: ${data}`)
+          send(data)
+        })
+        subprocess.on('close', (code) => {
+          console.log(`child process exited with code ${code}`)
+        })
       } catch (error) {
         msg = "fail"
         rslt = iconv.decode(Buffer.from(error.message, 'binary'), 'cp936')
