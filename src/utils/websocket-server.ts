@@ -36,7 +36,7 @@ export const initsocket = ()=>{
 export const send = (msg: string) => {
   if (global.ws !== null) {
     console.info(`send msg=${msg}`)
-    ws.send(msg)
+    global.ws.send(msg)
   }
 
 }
