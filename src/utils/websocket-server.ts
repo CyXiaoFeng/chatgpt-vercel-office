@@ -1,13 +1,17 @@
 import { WebSocketServer,WebSocket } from "ws"
 import { platform } from 'node:process'
-import { createServer } from 'http'
+import { createServer } from 'https'
 import { readFileSync } from 'fs'
 let ws: WebSocket | null = null
 let wss: WebSocketServer
 
 if (platform === 'win32') {
   console.log('init websocket for Windows')
-  const server = createServer()
+  const server = createServer({
+    cert: readFileSync('G:\\ssl\\localhost.crt'),
+    key: readFileSync('G:\\ssl\\localhost.key')
+
+  })
   const wss = new WebSocketServer({ noServer: true })
 
   wss.on('connection', function connection(ws, request) {
@@ -24,7 +28,7 @@ if (platform === 'win32') {
       wss.emit('connection', ws, request)
     })
   })
-  server.listen(8080)
+  server.listen(3232)
 
 } else {
   console.log('init websocket for linux')
