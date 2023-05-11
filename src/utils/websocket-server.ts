@@ -39,7 +39,7 @@ let lws
 export const send = (msg: string) => {
   if (lws !== null && lws !== undefined) {
     console.info(`send msg=${msg}`)
-    lws.send(msg)
+    lws.send(JSON.stringify(msg))
   } else {
     console.info("web socket not ready")
   }
