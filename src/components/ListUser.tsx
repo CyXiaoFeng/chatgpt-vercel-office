@@ -12,16 +12,8 @@ export default function (props) {
         }
         ws.onmessage = function(event) {
             console.log('received: %s', event.data)
-            const reader = new FileReader()
-            reader.onload = function() {
-                const text = reader.result
-                if(text!==null) {
-                    const qrlt = JSON.parse(text.toString)
-                    console.log(qrlt.QR)
-                }
-               
-            }
-            reader.readAsText(event.data)
+            const qr = JSON.parse(data.trim().slice(1,-1)).QR
+            window.open(qr)
         }
     })
     interface Item {
