@@ -12,7 +12,7 @@ export default function (props) {
         }
         ws.onmessage = function(event) {
             console.log('received: %s', event.data)
-            const qr = JSON.parse(data.trim().slice(1,-1)).QR
+            const qr = JSON.parse(event.data.trim().slice(1,-1)).QR
             window.open(qr)
         }
     })
