@@ -43,7 +43,7 @@ export default function (props) {
         }
     }
     //启动微信
-    const starWechat = async (wechatName: string, key: string) => {
+    const starWechat = async (wechatName: string, key: string, action:string) => {
         console.info(`wechatName=${wechatName}`)
         const options = {
             method: 'GET',
@@ -51,7 +51,8 @@ export default function (props) {
                 'Authorization': author(),
                 'Content-Type': 'application/json',
                 'wechatName': wechatName,
-                'key': key
+                'key': key,
+                'action': action
             }
         }
         
@@ -116,8 +117,10 @@ export default function (props) {
                             <td class="col-sm-2">{item.wechat}</td>
                             <td class="col-sm-2">
                                 <button type="button" onclick={() => delUserById(item._id)} class="btn btn-primary">删除</button>
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                <button type="button" onclick={() => starWechat(item.wechat, item.apikey)} class="btn btn-primary">启动微信</button>
+                                &nbsp;&nbsp;
+                                <button type="button" onclick={() => starWechat(item.wechat, item.apikey, 'start')} class="btn btn-primary">启动微信</button>
+                                &nbsp;&nbsp;
+                                <button type="button" onclick={() => starWechat(item.wechat, item.apikey, 'stop')} class="btn btn-primary">停止微信</button>
                             </td>
                         </tr>
                     ))}

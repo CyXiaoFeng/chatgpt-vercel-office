@@ -10,7 +10,6 @@ let lws:WebSocket
 
   })
     const wss = new WebSocketServer({ server })
-
     wss.on('connection', function connection(ws) {
       lws = ws
       ws.on('error', console.error)
@@ -42,6 +41,7 @@ export const send = (msg: string) => {
     lws.send(msg.toString())
   } else {
     console.info("web socket not ready")
+    // initsocket()
   }
 
 }

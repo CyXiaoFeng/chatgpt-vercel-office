@@ -56,22 +56,19 @@ export const post: APIRoute = async context => {
     )
   }
   */
-  let initOptions
-  if(password !==null && password !== undefined && password.trim().length>0) {
-    console.error(`pwd->${password}`)
-    const user = await (await Users()).findOne({ pwd: password })
-    const now = moment()
-    //未查到用户，或者用户已过期
-    if(user !== null && now.isBefore(moment(user.expireTime))) {
-      console.error(`apikey from db=${user.apikey}`)
-      initOptions = generatePayload(user===null?"":user.apikey, messages)
+  const  initOptions = async ()=>{
+    if(password !==null && password !== undefined && password.trim().length>0) {
+      console.error(`pwd->${password}`)
+      const user = await (await Users()).findOne({ pwd: password })
+      const now = moment()
+      //未查到用户，或者用户已过期
+        console.error(`apikey from db=${user?.apikey}`)
+        return  generatePayload((user !== null && now.isBefore(moment(user.expireTime)))?user.apikey:"", messages)
     } else {
-      initOptions = generatePayload(user===null?"":key, messages)
+      return generatePayload(key, messages)
     }
-   
-  } else {
-    initOptions = generatePayload(key, messages)
   }
+  
   // #vercel-disable-blocks
   if (httpsProxy) initOptions.dispatcher = new ProxyAgent(httpsProxy)
   // #vercel-end

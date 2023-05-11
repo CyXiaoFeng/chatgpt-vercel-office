@@ -23,7 +23,7 @@ export const get: APIRoute = async ({ params, request }) => {
   if ((response = isAuth(request)) !== undefined) return response
   let rslt, msg = "success"
   console.info(`param id->${params.id}, host = ${request.headers.get("host")}`)
-  let _id, command, wechat, key
+  let _id, action:string, wechat, key
   try {
     //用户列表
     if (params.id === "all") {
@@ -47,13 +47,13 @@ export const get: APIRoute = async ({ params, request }) => {
       })
       //执行shell命令
     } else if (params.id === "shell" && (wechat = request.headers.get("wechatName") || undefined) !== undefined
-      && (key = request.headers.get("key") || undefined) !== undefined) {
-      const command = './webchat.sh'
+      && (key = request.headers.get("key") || undefined) !== undefined && 
+      (action = request.headers.get("action") || "") !== undefined) {
+      const command = action==="start"?`./webchat.sh ${wechat} ${key}`:`./script.sh stop app-${wechat}`
       const cwd = '/usr/local/webchat/'
-      const params = [wechat, key]
       key = request.headers.get("key") || undefined
       try {
-        const subprocess = spawn(command, params, {
+        const subprocess = spawn(command, {
           cwd: cwd,
           detached: true
           // stdio: ['ignore', out, err],
@@ -61,7 +61,7 @@ export const get: APIRoute = async ({ params, request }) => {
         subprocess.unref()
         subprocess.stdout.on('data', (data:string) => {
           console.log(`stdout: ${data}`)
-          if(data.includes("QR"))
+          if(data.includes("QR") && (action==="start"))
             send(data)
         })
         subprocess.on('close', (code) => {
