@@ -51,7 +51,7 @@ export default function (props) {
   }
   const regex = /^.{4,}$/ // This regular expression matches any string with length greater than 3.
   const [inputName, setInputName] = createSignal("")
-  const [inputManagerPwd, setInputManagerPwd] = createSignal("ohmygod")
+  const [inputManagerPwd, setInputManagerPwd] = createSignal("")
   const [inputPwd, setInputPwd] = createSignal("")
   const [inputExpireTime, setInputExpireTime] = createSignal("")
   const [inputWechat, setInputWechat] = createSignal("")
