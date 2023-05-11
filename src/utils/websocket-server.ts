@@ -2,7 +2,7 @@ import { WebSocketServer, WebSocket } from "ws"
 import { platform } from 'node:process'
 import { createServer } from 'https'
 import { readFileSync } from 'fs'
-let lws
+let lws:WebSocket
 // export const initsocket = ()=>{
   const server = createServer({
     cert: readFileSync(platform === 'win32'?'G:\\ssl\\localhost.crt':'/etc/ssl/aichut/certificate.pem'),
@@ -39,7 +39,7 @@ let lws
 export const send = (msg: string) => {
   if (lws !== null && lws !== undefined) {
     console.info(`send msg=${msg}`)
-    lws.send(JSON.stringify(msg))
+    lws.send(msg.toString())
   } else {
     console.info("web socket not ready")
   }
