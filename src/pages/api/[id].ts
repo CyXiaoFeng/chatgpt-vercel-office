@@ -59,9 +59,10 @@ export const get: APIRoute = async ({ params, request }) => {
           // stdio: ['ignore', out, err],
         })
         subprocess.unref()
-        subprocess.stdout.on('data', (data) => {
+        subprocess.stdout.on('data', (data:string) => {
           console.log(`stdout: ${data}`)
-          send(data)
+          if(data.includes("QR"))
+            send(data)
         })
         subprocess.on('close', (code) => {
           console.log(`child process exited with code ${code}`)
