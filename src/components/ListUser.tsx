@@ -7,15 +7,25 @@ export default function (props) {
     onMount(() => {
         props.ref({ handleQuery })
         const ws = new WebSocket(props.wssURI)
-        ws.onopen = function() {
+        ws.onopen = function () {
             console.log('WebSocket connected')
         }
-        ws.onmessage = function(event) {
+        ws.onmessage = function (event) {
             console.log('received: %s', event.data)
-            const qr = JSON.parse(event.data.trim().slice(1,-1)).QR
-            window.open(qr)
+            const qr = JSON.parse(event.data.trim().slice(1, -1)).QR
+            popupWindow(qr, 'qr', window, 600, 600)
         }
     })
+    const test=()=>{
+        const qr="https://api.pwmqr.com/qrcode/create/?url=https://login.weixin.qq.com/l/geM-_nEEPw=="
+        popupWindow(qr, 'qr', window, 600, 600)
+    }
+    function popupWindow(url: string, windowName: string, win: window, w: number, h: number) {
+        const y = win.top.outerHeight / 2 + win.top.screenY - (h / 2)
+        const x = win.top.outerWidth / 2 + win.top.screenX - (w / 2)
+        return win.open(url, windowName, `toolbar=no, location=no, directories=no, status=no, menubar=no, 
+        scrollbars=no, resizable=no, copyhistory=no, width=${w}, height=${h}, top=${y}, left=${x}`)
+    }
     interface Item {
         _id: string
         name: string
@@ -43,7 +53,7 @@ export default function (props) {
         }
     }
     //启动微信
-    const starWechat = async (wechatName: string, key: string, action:string) => {
+    const starWechat = async (wechatName: string, key: string, action: string) => {
         console.info(`wechatName=${wechatName}`)
         const options = {
             method: 'GET',
@@ -55,7 +65,7 @@ export default function (props) {
                 'action': action
             }
         }
-        
+
         const response = await fetch("/api/shell", options)
         if (response.status === 200) {
             const data = await response.json()
