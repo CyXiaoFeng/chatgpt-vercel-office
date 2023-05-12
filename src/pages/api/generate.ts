@@ -5,7 +5,7 @@ import { generatePayload, parseOpenAIStream } from "@/utils/openAI"
 import { verifySignature } from "@/utils/auth"
 import type { APIRoute } from "astro"
 const httpsProxy = import.meta.env.HTTPS_PROXY
-import {Users} from "@/utils/mongodb"
+import { Users } from "@/utils/mongodb"
 import moment from 'moment'
 const baseUrl = (
   import.meta.env.OPENAI_API_BASE_URL || "https://api.openai.com"
@@ -28,7 +28,7 @@ export const post: APIRoute = async context => {
       { status: 400 }
     )
   }
- 
+
   if (
     import.meta.env.PROD &&
     !(await verifySignature(
@@ -45,30 +45,37 @@ export const post: APIRoute = async context => {
       { status: 401 }
     )
   }
-   /*if (sitePassword && !(sitePassword === pass || passList.includes(pass))) {
-    return new Response(
-      JSON.stringify({
-        error: {
-          message: "Invalid password."
-        }
-      }),
-      { status: 401 }
-    )
-  }
-  */
-  const  initOptions = async ()=>{
-    if(password !==null && password !== undefined && password.trim().length>0) {
-      console.error(`pwd->${password}`)
-      const user = await (await Users()).findOne({ pwd: password })
-      const now = moment()
-      //未查到用户，或者用户已过期
-        console.error(`apikey from db=${user?.apikey}`)
-        return  generatePayload((user !== null && now.isBefore(moment(user.expireTime)))?user.apikey:"", messages)
-    } else {
-      return generatePayload(key, messages)
+  /*if (sitePassword && !(sitePassword === pass || passList.includes(pass))) {
+   return new Response(
+     JSON.stringify({
+       error: {
+         message: "Invalid password."
+       }
+     }),
+     { status: 401 }
+   )
+ }
+ */
+  let newKey = key
+  if (password !== null && password !== undefined && password.trim().length > 0) {
+    console.info(`pwd->${password}`)
+    const user = await (await Users()).findOne({ pwd: password })
+    const now = moment()
+    //未查到用户，或者用户已过期
+    console.error(`apikey from db=${user?.apikey}`)
+    if ((user === null || now.isAfter(moment(user.expireTime)))) {
+      return new Response(
+        JSON.stringify({
+          error: {
+            message: "Password expired."
+          }
+        }),
+        { status: 403 }
+      )
     }
+    newKey = user.apikey
   }
-  
+  const initOptions = generatePayload(newKey, messages)
   // #vercel-disable-blocks
   if (httpsProxy) initOptions.dispatcher = new ProxyAgent(httpsProxy)
   // #vercel-end
