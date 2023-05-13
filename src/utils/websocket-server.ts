@@ -3,6 +3,7 @@ import { platform } from 'node:process'
 import { createServer } from 'https'
 import { readFileSync } from 'fs'
 let lws:WebSocket
+global.listnerServer
 // export const initsocket = ()=>{
   const server = createServer({
     cert: readFileSync(platform === 'win32'?'G:\\ssl\\localhost.crt':'/etc/ssl/aichut/certificate.pem'),
@@ -18,7 +19,8 @@ let lws:WebSocket
         console.log(msg.toString())
       })
     })
-    server.listen(3232, function listening() {
+    if(!global.listnerServer) {
+      global.listnerServer = server.listen(3232, function listening() {
       const url = `wss://localhost:${server.address().port}`
       console.info(url)
       const ws = new WebSocket(url, {
@@ -34,6 +36,7 @@ let lws:WebSocket
       })
 
     })
+  }
 // }
 export const send = (msg: string) => {
   if (lws !== null && lws !== undefined) {

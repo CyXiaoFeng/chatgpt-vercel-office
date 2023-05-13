@@ -14,10 +14,24 @@ const baseUrl = (
   .replace(/\/$/, "")
 const sitePassword = import.meta.env.SITE_PASSWORD || ""
 const passList = sitePassword.split(",") || []
+import {verifyMessage} from "@/utils/sensitive"
 
 export const post: APIRoute = async context => {
   const body = await context.request.json()
   const { sign, time, messages, password, key } = body
+  const curMsg = messages[messages.length-1].content
+  const verRslt = verifyMessage(curMsg)
+  console.info(`${curMsg}：${verRslt?"不是敏感词":"是敏感词"} `)
+  if(!verRslt) {
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: "请勿输入敏感信息"
+        }
+      }),
+      { status: 400 }
+    )
+  }
   if (!messages) {
     return new Response(
       JSON.stringify({
@@ -63,7 +77,7 @@ export const post: APIRoute = async context => {
     const now = moment()
     //未查到用户，或者用户已过期
     console.error(`apikey from db=${user?.apikey}`)
-    if ((user === null || now.isAfter(moment(user.expireTime)))) {
+    if ((user === null || now.isAfter(moment(user.expireTime,"YYYY/MM/DD HH:mm:ss")))) {
       return new Response(
         JSON.stringify({
           error: {
