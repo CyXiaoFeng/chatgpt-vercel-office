@@ -15,7 +15,6 @@ const baseUrl = (
 const sitePassword = import.meta.env.SITE_PASSWORD || ""
 const passList = sitePassword.split(",") || []
 import {verifyMessage} from "@/utils/sensitive"
-
 export const post: APIRoute = async context => {
   const body = await context.request.json()
   const { sign, time, messages, password, key } = body
@@ -95,7 +94,6 @@ export const post: APIRoute = async context => {
   // #vercel-end
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
   const response = (await fetch(
     `${baseUrl}/v1/chat/completions`,
     initOptions
