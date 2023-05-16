@@ -10,6 +10,9 @@ import moment from 'moment'
 const baseUrl = (
   import.meta.env.OPENAI_API_BASE_URL || "https://api.openai.com"
 )
+const sensitiveTip = (
+  import.meta.env.SENSITIVE_TIP || ""
+)
   .trim()
   .replace(/\/$/, "")
 const sitePassword = import.meta.env.SITE_PASSWORD || ""
@@ -25,7 +28,7 @@ export const post: APIRoute = async context => {
     return new Response(
       JSON.stringify({
         error: {
-          message: "请勿输入敏感信息"
+          message: sensitiveTip
         }
       }),
       { status: 400 }

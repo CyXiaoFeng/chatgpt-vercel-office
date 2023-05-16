@@ -6,7 +6,7 @@ export const verifyMessage = (msg: string): boolean => {
         console.info(`msg = ${msg}`)
         return mint.verify(msg)
     }catch(error) {
-        console.info(`敏感词过滤问题：${error}`)
+        console.info(`过滤问题：${error}`)
     }
     return true
    
