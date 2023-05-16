@@ -46,10 +46,6 @@ const serverStart = ()=> {
 }
 // https://astro.build/config
 export default defineConfig({
-  onServerStart({ app, server }) {
-    const { address, port } = server.address()
-    console.log(`已经启动完了服务，服务的端口是 ${port}，IP是 ${address}`)
-  },
   integrations: [
     unocss({
       presets: [
