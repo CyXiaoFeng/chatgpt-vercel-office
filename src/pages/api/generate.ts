@@ -1,7 +1,7 @@
 // #vercel-disable-blocks
 import { ProxyAgent, fetch } from "undici"
 // #vercel-end
-import { generatePayload, parseOpenAIStream } from "@/utils/openAI"
+import { generatePayload, parseOpenAIStream,parseOpenAIContent } from "@/utils/openAI"
 import { verifySignature } from "@/utils/auth"
 import type { APIRoute } from "astro"
 const httpsProxy = import.meta.env.HTTPS_PROXY
@@ -22,8 +22,8 @@ export const post: APIRoute = async context => {
   const body = await context.request.json()
   const { sign, time, messages, password, key } = body
   const curMsg = messages[messages.length-1].content
-  const verRslt = verifyMessage(curMsg)
-  console.info(`${curMsg}：${verRslt?"不是敏感词":"是敏感词"} `)
+  const verRslt = true//verifyMessage(curMsg)
+  // console.info(`${curMsg}：${verRslt?"不是敏感词":"是敏感词"} `)
   if(!verRslt) {
     return new Response(
       JSON.stringify({
@@ -113,5 +113,5 @@ export const post: APIRoute = async context => {
     )
   })) as Response
 
-  return parseOpenAIStream(response) as Response
+  return parseOpenAIContent(response) as Response
 }

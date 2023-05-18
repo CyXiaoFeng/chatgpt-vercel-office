@@ -1,7 +1,7 @@
 import { createParser } from "eventsource-parser"
 import type { ParsedEvent, ReconnectInterval } from "eventsource-parser"
 import type { ChatMessage } from "@/types"
-
+import { load, cut }  from '@node-rs/jieba'
 const model = import.meta.env.OPENAI_API_MODEL || "gpt-3.5-turbo"
 
 export const generatePayload = (
@@ -22,6 +22,7 @@ export const generatePayload = (
   })
 })
 
+//流式输出
 export const parseOpenAIStream = (rawResponse: Response) => {
   const encoder = new TextEncoder()
   const decoder = new TextDecoder()
@@ -32,7 +33,7 @@ export const parseOpenAIStream = (rawResponse: Response) => {
       statusText: rawResponse.statusText
     })
   }
-
+  
   const stream = new ReadableStream({
     async start(controller) {
       const streamParser = (event: ParsedEvent | ReconnectInterval) => {
@@ -43,15 +44,6 @@ export const parseOpenAIStream = (rawResponse: Response) => {
             return
           }
           try {
-            // response = {
-            //   id: 'chatcmpl-6pULPSegWhFgi0XQ1DtgA3zTa1WR6',
-            //   object: 'chat.completion.chunk',
-            //   created: 1677729391,
-            //   model: 'gpt-3.5-turbo-0301',
-            //   choices: [
-            //     { delta: { content: '你' }, index: 0, finish_reason: null }
-            //   ],
-            // }
             const json = JSON.parse(data)
             const text = json.choices[0].delta?.content || ""
             const queue = encoder.encode(text)
@@ -61,12 +53,55 @@ export const parseOpenAIStream = (rawResponse: Response) => {
           }
         }
       }
-
       const parser = createParser(streamParser)
-      for await (const chunk of rawResponse.body as any)
-        parser.feed(decoder.decode(chunk))
+      for await (const chunk of rawResponse.body as any) {
+        const chukValue = decoder.decode(chunk)
+        parser.feed(chukValue)
+      }
+      
     }
   })
-
   return new Response(stream)
+}
+
+//流式输出结束后再展现给前端
+export const parseOpenAIContent = async (rawResponse: Response) => {
+  const msgAry:any[]=[]
+  const decoder = new TextDecoder()
+  const getStreamContent = async ():Promise<string>=>{
+    const streamParser = (event: ParsedEvent | ReconnectInterval) => {
+      if (event.type === "event") {
+        const data = event.data
+        if (data === "[DONE]") {
+          console.info(`完整的响应=${msgAry.join("")}`)
+          return
+        }
+        try {
+          const json = JSON.parse(data)
+          const text = json.choices[0].delta?.content || ""
+          msgAry.push(...text)
+        } catch (e) {
+          console.info(e)
+        }
+      }
+    }
+    const reader = rawResponse.body?.getReader()
+    return await reader?.read().then(async function processText({ done, value }) {
+      // Result 对象包含了两个属性：
+      // done  - 当 stream 传完所有数据时则变成 true
+      // value - 数据片段。当 done 为 true 时始终为 undefined
+      if (done) {
+        console.log("Stream complete")
+        load()
+        const cutrlt = cut(msgAry.join(""), false)
+        console.info(`msgSplit length = ${cutrlt.length}`)
+        return msgAry.join("")
+      }
+      const chunk = decoder.decode(value)
+      const parser = createParser(streamParser)
+      parser.feed(chunk)
+      return reader.read().then(processText)
+    })
+  }
+  return new Response(await getStreamContent())
 }
