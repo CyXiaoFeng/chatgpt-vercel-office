@@ -2,6 +2,7 @@ import { createParser } from "eventsource-parser"
 import type { ParsedEvent, ReconnectInterval } from "eventsource-parser"
 import type { ChatMessage } from "@/types"
 import jieba from "./jieba/index.ts"
+import { filterMessage } from "@/utils/sensitive"
 const model = import.meta.env.OPENAI_API_MODEL || "gpt-3.5-turbo"
 
 export const generatePayload = (
@@ -72,7 +73,7 @@ export const parseOpenAIContent = async (rawResponse: Response) => {
       if (event.type === "event") {
         const data = event.data
         if (data === "[DONE]") {
-          console.info(`完整的响应=${msgAry.join("")}`)
+          // console.info(`完整的响应=${msgAry.join("")}`)
           return
         }
         try {
@@ -96,7 +97,8 @@ export const parseOpenAIContent = async (rawResponse: Response) => {
         if (done) {
           const rltContent = msgAry.join("")
           console.log(`Stream complete->${rltContent}`)
-          return await jieba(rltContent)
+          // console.info(filterMessage(rltContent))
+          return filterMessage(rltContent, true) //await jieba(rltContent)
         }
         const chunk = decoder.decode(value)
         if (chunk.includes("error")) {
