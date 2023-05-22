@@ -1,7 +1,7 @@
 import { createParser } from "eventsource-parser"
 import type { ParsedEvent, ReconnectInterval } from "eventsource-parser"
 import type { ChatMessage } from "@/types"
-import { load, cut }  from '@node-rs/jieba'
+import jieba from "./jieba/index.ts"
 const model = import.meta.env.OPENAI_API_MODEL || "gpt-3.5-turbo"
 
 export const generatePayload = (
@@ -16,7 +16,7 @@ export const generatePayload = (
   body: JSON.stringify({
     model: model || "gpt-3.5-turbo",
     messages: messages.map(k => ({ role: k.role, content: k.content })),
-    temperature:0.6,
+    temperature: 0.6,
     // max_tokens: 4096 - tokens,
     stream: true
   })
@@ -26,14 +26,14 @@ export const generatePayload = (
 export const parseOpenAIStream = (rawResponse: Response) => {
   const encoder = new TextEncoder()
   const decoder = new TextDecoder()
-  
+
   if (!rawResponse.ok) {
     return new Response(rawResponse.body, {
       status: rawResponse.status,
       statusText: rawResponse.statusText
     })
   }
-  
+
   const stream = new ReadableStream({
     async start(controller) {
       const streamParser = (event: ParsedEvent | ReconnectInterval) => {
@@ -58,7 +58,6 @@ export const parseOpenAIStream = (rawResponse: Response) => {
         const chukValue = decoder.decode(chunk)
         parser.feed(chukValue)
       }
-      
     }
   })
   return new Response(stream)
@@ -66,9 +65,9 @@ export const parseOpenAIStream = (rawResponse: Response) => {
 
 //流式输出结束后再展现给前端
 export const parseOpenAIContent = async (rawResponse: Response) => {
-  const msgAry:any[]=[]
+  const msgAry: any[] = []
   const decoder = new TextDecoder()
-  const getStreamContent = async ():Promise<string>=>{
+  const getStreamContent = async (): Promise<string> => {
     const streamParser = (event: ParsedEvent | ReconnectInterval) => {
       if (event.type === "event") {
         const data = event.data
@@ -83,25 +82,31 @@ export const parseOpenAIContent = async (rawResponse: Response) => {
         } catch (e) {
           console.info(e)
         }
+      } else {
+        console.info(event.type)
       }
     }
     const reader = rawResponse.body?.getReader()
-    return await reader?.read().then(async function processText({ done, value }) {
-      // Result 对象包含了两个属性：
-      // done  - 当 stream 传完所有数据时则变成 true
-      // value - 数据片段。当 done 为 true 时始终为 undefined
-      if (done) {
-        console.log("Stream complete")
-        load()
-        const cutrlt = cut(msgAry.join(""), false)
-        console.info(`msgSplit length = ${cutrlt.length}`)
-        return msgAry.join("")
-      }
-      const chunk = decoder.decode(value)
-      const parser = createParser(streamParser)
-      parser.feed(chunk)
-      return reader.read().then(processText)
-    })
+    return await reader
+      ?.read()
+      .then(async function processText({ done, value }) {
+        // Result 对象包含了两个属性：
+        // done  - 当 stream 传完所有数据时则变成 true
+        // value - 数据片段。当 done 为 true 时始终为 undefined
+        if (done) {
+          const rltContent = msgAry.join("")
+          console.log(`Stream complete->${rltContent}`)
+          return await jieba(rltContent)
+        }
+        const chunk = decoder.decode(value)
+        if (chunk.includes("error")) {
+          console.info(chunk)
+          return JSON.parse(chunk).error.code
+        }
+        const parser = createParser(streamParser)
+        parser.feed(chunk)
+        return reader.read().then(processText)
+      })
   }
   return new Response(await getStreamContent())
 }

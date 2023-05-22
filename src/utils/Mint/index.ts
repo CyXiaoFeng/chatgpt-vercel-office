@@ -1,4 +1,3 @@
-
 import Node from './node'
 
 interface FilterOptions {

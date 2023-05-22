@@ -26,6 +26,25 @@ const envAdapter = () => {
     })
   }
 }
+
+export function myIntegration() {
+  console.info("hello")
+  return {
+    hooks: {
+      'astro:build:done': async ({ dir }) => {
+        console.info(`currrnt dir=${dir}`)
+        // const metadata = await getIntegrationMetadata();
+        // // Use fileURLToPath to get a valid, cross-platform absolute path string 
+        // const outFile = fileURLToPath(new URL('./my-integration.json', dir));
+        // await writeFile(outFile, JSON.stringify(metadata));
+      },
+      'astro:server:start':()=>{
+        console.info("hello")
+      }
+    }
+  }
+}
+
 const adapter = () => {
   if (process.env.VERCEL) {
     return vercel()
@@ -47,6 +66,20 @@ const serverStart = ()=> {
 // https://astro.build/config
 export default defineConfig({
   integrations: [
+    {name: 'myIntegration',
+    hooks: {
+      'astro:build:done': async ({ dir }) => {
+        console.info(`currrnt dir=${dir}`)
+        // const metadata = await getIntegrationMetadata();
+        // // Use fileURLToPath to get a valid, cross-platform absolute path string 
+        // const outFile = fileURLToPath(new URL('./my-integration.json', dir));
+        // await writeFile(outFile, JSON.stringify(metadata));
+      },
+      'astro:server:start':()=>{
+        console.info("hello")
+      }
+    }
+  },
     unocss({
       presets: [
         presetAttributify(),
@@ -67,7 +100,7 @@ export default defineConfig({
   server: { port: 80},
   vite: {
     plugins: [
- 
+  
       process.env.OUTPUT === 'vercel' && disableBlocks(),
       process.env.OUTPUT === 'netlify' && disableBlocks('netlify'),
       process.env.OUTPUT !== 'netlify' && VitePWA({
@@ -118,10 +151,14 @@ export default defineConfig({
           installPrompt: true,
           periodicSyncForUpdates: 20,
         },
+        "compilerOptions": {
+          "module": "CommonJS",
+        }
       })
     ],
     build: {
       chunkSizeWarningLimit: 1600,
+      transformMixedEsModules: true,
     },
   },
 })
