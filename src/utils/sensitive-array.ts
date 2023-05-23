@@ -48558,7 +48558,6 @@ const sensitives = [
   "李至伦",
   "谢非",
   "插干",
-  "",
   "UR",
   "urban",
   "鸡巴",
@@ -48636,7 +48635,10 @@ const sensitives = [
   "頭",
   "8964",
   "8964坦克",
-  "八九六四坦克"
+  "八九六四坦克",
+  "天安门广场的",
+  "一系列政治事件",
+  "政治事件"
 ]
 
 export const whiteSensitives: string[] = [

@@ -1,30 +1,30 @@
 // #vercel-disable-blocks
 import { ProxyAgent, fetch } from "undici"
 // #vercel-end
-import { generatePayload, parseOpenAIStream,parseOpenAIContent } from "@/utils/openAI"
+import {
+  generatePayload,
+  parseOpenAIStream,
+  parseOpenAIContent
+} from "@/utils/openAI"
 import { verifySignature } from "@/utils/auth"
 import type { APIRoute } from "astro"
 const httpsProxy = import.meta.env.HTTPS_PROXY
 import { Users } from "@/utils/mongodb"
-import moment from 'moment'
-const baseUrl = (
-  import.meta.env.OPENAI_API_BASE_URL || "https://api.openai.com"
-)
-const sensitiveTip = (
-  import.meta.env.SENSITIVE_TIP || ""
-)
+import moment from "moment"
+const baseUrl = import.meta.env.OPENAI_API_BASE_URL || "https://api.openai.com"
+const sensitiveTip = (import.meta.env.SENSITIVE_TIP || "")
   .trim()
   .replace(/\/$/, "")
 const sitePassword = import.meta.env.SITE_PASSWORD || ""
 const passList = sitePassword.split(",") || []
-import {verifyMessage} from "@/utils/sensitive"
+import { verifyMessage } from "@/utils/sensitive"
 export const post: APIRoute = async context => {
   const body = await context.request.json()
   const { sign, time, messages, password, key } = body
-  const curMsg = messages[messages.length-1].content
-  const verRslt = true//verifyMessage(curMsg)
+  const curMsg = messages[messages.length - 1].content
+  const verRslt = verifyMessage(curMsg)
   // console.info(`${curMsg}：${verRslt?"不是敏感词":"是敏感词"} `)
-  if(!verRslt) {
+  if (!verRslt) {
     return new Response(
       JSON.stringify({
         error: {
@@ -73,13 +73,20 @@ export const post: APIRoute = async context => {
  }
  */
   let newKey = key
-  if (password !== null && password !== undefined && password.trim().length > 0) {
+  if (
+    password !== null &&
+    password !== undefined &&
+    password.trim().length > 0
+  ) {
     console.info(`pwd->${password}`)
     const user = await (await Users()).findOne({ pwd: password })
     const now = moment()
     //未查到用户，或者用户已过期
     console.error(`apikey from db=${user?.apikey}`)
-    if ((user === null || now.isAfter(moment(user.expireTime,"YYYY/MM/DD HH:mm:ss")))) {
+    if (
+      user === null ||
+      now.isAfter(moment(user.expireTime, "YYYY/MM/DD HH:mm:ss"))
+    ) {
       return new Response(
         JSON.stringify({
           error: {

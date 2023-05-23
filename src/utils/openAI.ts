@@ -124,7 +124,6 @@ function iteratorToStream(iterator) {
         if (done) {
           clearInterval(interval)
           controller.close()
-          console.info("done")
         } else {
           // console.info(value)
           controller.enqueue(value)
