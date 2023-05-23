@@ -1,4 +1,4 @@
-import Mint from "./mint"
+import { Mint } from "./mint"
 import * as sensitives from "./sensitive-array"
 const mint = new Mint(sensitives.default, sensitives.whiteSensitives)
 
