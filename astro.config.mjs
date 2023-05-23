@@ -87,7 +87,6 @@ export default defineConfig({
   server: { port: 80},
   vite: {
     plugins: [
-  
       process.env.OUTPUT === 'vercel' && disableBlocks(),
       process.env.OUTPUT === 'netlify' && disableBlocks('netlify'),
       process.env.OUTPUT !== 'netlify' && VitePWA({
@@ -138,9 +137,6 @@ export default defineConfig({
           installPrompt: true,
           periodicSyncForUpdates: 20,
         },
-        "compilerOptions": {
-          "module": "CommonJS",
-        }
       })
     ],
     build: {
