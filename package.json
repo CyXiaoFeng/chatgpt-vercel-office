@@ -4,7 +4,6 @@
   "description": "Elegant and Powerful. Powered by OpenAI and Vercel",
   "type": "module",
   "license": "MIT",
-  "main": "./src/utils/jieba/index.ts",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev --host 0.0.0.0",
@@ -14,10 +13,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.astro",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx,.astro --fix",
-    "install": "node-pre-gyp install --fallback-to-build",
-    "rebuild": "node-pre-gyp rebuild",
-    "test": "node test/demo.cjs && node test/load_dict_demo.cjs && mocha --timeout 10s -R spec test/test.cjs && mocha --timeout 10s -R spec test/load_dict_test.cjs"
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx,.astro --fix"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged"
@@ -101,12 +97,5 @@
     "vite-plugin-pwa": "^0.14.4",
     "workbox-window": "^6.5.4"
   },
-  "packageManager": "pnpm@7.28.0",
-  "binary": {
-    "module_name": "nodejieba",
-    "module_path": "./build/Release/",
-    "host": "https://github.com/yanyiwu/nodejieba/releases/download/",
-    "remote_path": "v{version}",
-    "package_name": "{module_name}-v{version}-{node_abi}-{platform}-{arch}.tar.gz"
-  }
+  "packageManager": "pnpm@7.28.0"
 }
