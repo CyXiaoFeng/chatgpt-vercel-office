@@ -82,9 +82,6 @@ dependencies:
   iconv-lite:
     specifier: ^0.6.3
     version: registry.npmmirror.com/iconv-lite@0.6.3
-  jieba:
-    specifier: ^1.0.0
-    version: 1.0.0
   js-sha256:
     specifier: ^0.9.0
     version: registry.npmmirror.com/js-sha256@0.9.0
@@ -5772,10 +5769,6 @@ packages:
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
-
-  /jieba@1.0.0:
-    resolution: {integrity: sha512-tA7VQs2xr9RBFmAxKe6szAR/yE3ga8AsoNs5QPIU7z3jlRcqThGbqavYAbWk6wf8s4LnY9zSKFFQfZx+gwus6A==}
-    dev: false
 
   /jiti@1.17.1:
     resolution: {integrity: sha512-NZIITw8uZQFuzQimqjUxIrIcEdxYDFIe/0xYfIlVXTkiBjjyBEvgasj5bb0/cHtPRD/NziPbT312sFrkI5ALpw==}

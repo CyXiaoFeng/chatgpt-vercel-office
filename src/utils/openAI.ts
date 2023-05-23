@@ -1,7 +1,6 @@
 import { createParser } from "eventsource-parser"
 import type { ParsedEvent, ReconnectInterval } from "eventsource-parser"
 import type { ChatMessage } from "@/types"
-import jieba from "./jieba/index.ts"
 import { filterMessage } from "@/utils/sensitive"
 const model = import.meta.env.OPENAI_API_MODEL || "gpt-3.5-turbo"
 

@@ -57,7 +57,6 @@
     "highlight.js": "^11.7.0",
     "html-to-image": "^1.11.11",
     "iconv-lite": "^0.6.3",
-    "jieba": "^1.0.0",
     "js-sha256": "^0.9.0",
     "just-throttle": "^4.2.0",
     "katex": "^0.16.4",
