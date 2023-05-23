@@ -66,6 +66,12 @@ export const parseOpenAIStream = (rawResponse: Response) => {
 
 //流式输出结束后再展现给前端
 export const parseOpenAIContent = async (rawResponse: Response) => {
+  if (!rawResponse.ok) {
+    return new Response(rawResponse.body, {
+      status: rawResponse.status,
+      statusText: rawResponse.statusText
+    })
+  }
   const msgAry: any[] = []
   const decoder = new TextDecoder()
   const getStreamContent = async (): Promise<string> => {
@@ -97,18 +103,33 @@ export const parseOpenAIContent = async (rawResponse: Response) => {
         if (done) {
           const rltContent = msgAry.join("")
           console.log(`Stream complete->${rltContent}`)
-          // console.info(filterMessage(rltContent))
-          return filterMessage(rltContent, true) //await jieba(rltContent)
+          const iterator = filterMessage(rltContent, true)[Symbol.iterator]()
+          return iteratorToStream(iterator) //await jieba(rltContent)
         }
         const chunk = decoder.decode(value)
-        if (chunk.includes("error")) {
-          console.info(chunk)
-          return JSON.parse(chunk).error.code
-        }
         const parser = createParser(streamParser)
         parser.feed(chunk)
         return reader.read().then(processText)
       })
   }
   return new Response(await getStreamContent())
+}
+
+function iteratorToStream(iterator) {
+  let interval
+  return new ReadableStream({
+    start(controller) {
+      interval = setInterval(() => {
+        const { value, done } = iterator.next()
+        if (done) {
+          clearInterval(interval)
+          controller.close()
+          console.info("done")
+        } else {
+          // console.info(value)
+          controller.enqueue(value)
+        }
+      }, 100)
+    }
+  })
 }

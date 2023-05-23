@@ -1,4 +1,4 @@
-import Node from './node'
+import Node from "./node"
 
 interface FilterOptions {
   // sensitive?: boolean
@@ -15,19 +15,21 @@ interface MintOptions {
   customCharacter?: string
 }
 
-export class Mint {
-  root: Node = new Node('root')
+export default class Mint {
+  root: Node = new Node("root")
   customCharacter: string
-
-  constructor(keys: string[], ops?: MintOptions) {
+  
+  constructor(keys: string[], whiteKeys?:string[], ops?: MintOptions) {
     const len = keys.length
-    this.customCharacter = ops?.customCharacter || '*'
+    this.customCharacter = ops?.customCharacter || "*"
 
     for (let idx = 0; idx < len; idx++) {
-      this.add(keys[idx], false)
+      if(!whiteKeys?.includes(keys[idx]))
+        this.add(keys[idx], false)
     }
     this.build()
   }
+
 
   // 构建
   private build() {
@@ -58,8 +60,8 @@ export class Mint {
   private search(
     text: string,
     options: FilterOptions = {
-      replace: true,
-    },
+      replace: true
+    }
   ) {
     let node: Node | undefined = this.root
     const fText: string[] = []
@@ -84,7 +86,7 @@ export class Mint {
 
       if (node.word) {
         let idx = i + 1 - node.depth
-        let word = ''
+        let word = ""
         while (idx <= i) {
           const v = oText[idx]
           word += v
@@ -106,7 +108,7 @@ export class Mint {
 
     return {
       words,
-      text: fText.join(''),
+      text: fText.join("")
     }
   }
 
@@ -128,7 +130,7 @@ export class Mint {
    * console.log(status) // { words: ["无法通过"], text: "这是一句无法通过的文本" }
    * ```
    */
-  filter(text: string, options?: Pick<FilterOptions, 'replace'>): FilterData {
+  filter(text: string, options?: Pick<FilterOptions, "replace">): FilterData {
     return this.search(text, options)
   }
 
@@ -173,11 +175,11 @@ export class Mint {
     key: string,
     len: number,
     node?: Node,
-    carry: 'update' | 'delete' = 'delete',
-    idx = 0,
-  ): 'update' | 'delete' {
+    carry: "update" | "delete" = "delete",
+    idx = 0
+  ): "update" | "delete" {
     if (!node) {
-      return 'delete'
+      return "delete"
     }
 
     if (idx === len) {
@@ -192,7 +194,7 @@ export class Mint {
         }
       }
 
-      return isDel ? carry : 'update'
+      return isDel ? carry : "update"
     } else {
       const val = key[idx]
       const next = node.children[val]
@@ -200,12 +202,12 @@ export class Mint {
         key,
         len,
         next,
-        node.word ? 'update' : carry,
-        idx + 1,
+        node.word ? "update" : carry,
+        idx + 1
       )
 
       node.count--
-      if (type === 'delete' && next?.count === 0) {
+      if (type === "delete" && next?.count === 0) {
         delete node.children[val]
         // node.children[val] = undefined
       }
@@ -313,5 +315,3 @@ export class Mint {
     }
   }
 }
-
-export default Mint

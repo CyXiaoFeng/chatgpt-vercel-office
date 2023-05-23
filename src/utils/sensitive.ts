@@ -1,10 +1,10 @@
 import Mint from "./mint"
-import sensitives from "./sensitive-array"
-const mint = new Mint(sensitives)
+import * as sensitives from "./sensitive-array"
+const mint = new Mint(sensitives.default, sensitives.whiteSensitives)
+
 export const verifyMessage = (msg: string): boolean => {
   try {
     console.info(`msg = ${msg}`)
-    console.info(mint.filter(msg))
     return mint.verify(msg)
   } catch (error) {
     console.info(`过滤问题：${error}`)
@@ -17,8 +17,15 @@ export const filterMessage = (msg: string, replace?: boolean): string => {
     const msgData = replace
       ? mint.filter(msg)
       : mint.filter(msg, { replace: false })
-    console.info(msgData)
+    const words = msgData.words.filter(
+      (item, index, array) => array.indexOf(item) === index
+    )
     const changeMsg = msgData.text
+    console.info(
+      `txt length =${changeMsg.length}, sensitive-> ${words}-> length=${
+        words.join("").length
+      }`
+    )
     return changeMsg
   } catch (error) {
     console.info(`过滤问题：${error}`)
