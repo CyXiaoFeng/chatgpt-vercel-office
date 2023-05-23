@@ -36,8 +36,6 @@
     "@astrojs/solid-js": "^2.1.0",
     "@astrojs/vercel": "^3.2.1",
     "@mapbox/node-pre-gyp": "^1.0.10",
-    "@node-rs/jieba": "^1.7.0",
-    "@node-rs/jieba-win32-x64-msvc": "^1.7.0",
     "@rollup/plugin-commonjs": "^25.0.0",
     "@solid-primitives/event-listener": "^2.2.8",
     "@solid-primitives/resize-observer": "^2.0.12",

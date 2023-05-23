@@ -18,18 +18,16 @@ interface MintOptions {
 export default class Mint {
   root: Node = new Node("root")
   customCharacter: string
-  
-  constructor(keys: string[], whiteKeys?:string[], ops?: MintOptions) {
+
+  constructor(keys: string[], whiteKeys?: string[], ops?: MintOptions) {
     const len = keys.length
     this.customCharacter = ops?.customCharacter || "*"
 
     for (let idx = 0; idx < len; idx++) {
-      if(!whiteKeys?.includes(keys[idx]))
-        this.add(keys[idx], false)
+      if (!whiteKeys?.includes(keys[idx])) this.add(keys[idx], false)
     }
     this.build()
   }
-
 
   // 构建
   private build() {
