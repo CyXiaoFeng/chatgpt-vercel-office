@@ -127,7 +127,7 @@ function iteratorToStream(iterator) {
           // console.info(value)
           controller.enqueue(value)
         }
-      }, 100)
+      }, 50)
     }
   })
 }
