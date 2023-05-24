@@ -19,17 +19,15 @@ export const verifyMessage = (msg: string): boolean => {
 export const filterMessage = (msg: string, replace?: boolean): string => {
   try {
     console.info(`output msg = ${msg}`)
-    const msgData = replace
-      ? mint.filter(msg)
-      : mint.filter(msg, { replace: false })
+    const msgData = mint.filter(msg, { replace: replace })
     const words = msgData.words.filter(
       (item, index, array) => array.indexOf(item) === index
     )
     const changeMsg = msgData.text
     console.info(
-      `txt length =${changeMsg.length}, sensitive-> [${words}]-> length=${
-        words.join("").length
-      }`
+      `output msg length =${
+        changeMsg.length
+      }, sensitive-> [${words}]-> length=${words.join("").length}`
     )
     return changeMsg
   } catch (error) {
