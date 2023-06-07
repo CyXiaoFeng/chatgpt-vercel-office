@@ -9,12 +9,12 @@ const server = createServer({
   cert: readFileSync(
     platform === "win32"
       ? "G:\\ssl\\localhost.crt"
-      : "../aichut.com/certificate.pem"
+      : "/usr/local/chatgpt-vercel-office/aichut.com/certificate.pem"
   ),
   key: readFileSync(
     platform === "win32"
       ? "G:\\ssl\\localhost.key"
-      : "../aichut.com/private.pem"
+      : "/usr/local/chatgpt-vercel-office/aichut.com/private.pem"
   )
 })
 const wss = new WebSocketServer({ server })
