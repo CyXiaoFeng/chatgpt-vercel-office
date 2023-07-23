@@ -14,7 +14,6 @@ import {
 import solidJs from "@astrojs/solid-js"
 import { VitePWA } from 'vite-plugin-pwa'
 import { send } from "./src/utils/websocket-server"
-
 const envAdapter = () => {
   if (process.env.OUTPUT === 'vercel') {
     return vercel()
