@@ -60,7 +60,7 @@
     "markdown-it-kbd": "^2.2.2",
     "mock-aws-s3": "^4.0.2",
     "moment": "^2.29.4",
-    "mongodb": "^5.3.0",
+    "mongodb": "^5.7.0",
     "mongoose": "^7.0.4",
     "solid-js": "^1.6.15",
     "solidjs-use": "^1.2.0",

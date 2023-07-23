@@ -1,141 +1,185 @@
 import { createSignal, onMount } from "solid-js"
-import 'bootstrap/dist/css/bootstrap.css'
+import "bootstrap/dist/css/bootstrap.css"
 import "~/styles/listUser.css"
 export default function (props) {
-    const [items, setItems] = createSignal<Item[]>([])
-    const [author, setAuthor] = createSignal("")
-    onMount(() => {
-        props.ref({ handleQuery })
-        const ws = new WebSocket(props.wssURI)
-        ws.onopen = function () {
-            console.log('WebSocket connected')
-        }
-        ws.onmessage = function (event) {
-            console.log('received: %s', event.data)
-            const qr = JSON.parse(event.data.trim().slice(1, -1)).QR
-            popupWindow(qr, 'qr', window, 600, 600)
-        }
-    })
-    const test=()=>{
-        const qr="https://api.pwmqr.com/qrcode/create/?url=https://login.weixin.qq.com/l/geM-_nEEPw=="
-        popupWindow(qr, 'qr', window, 600, 600)
+  const [items, setItems] = createSignal<Item[]>([])
+  const [author, setAuthor] = createSignal("")
+  onMount(() => {
+    props.ref({ handleQuery })
+    const ws = new WebSocket(props.wssURI)
+    ws.onopen = function () {
+      console.log("WebSocket connected")
     }
-    function popupWindow(url: string, windowName: string, win: window, w: number, h: number) {
-        const y = win.top.outerHeight / 2 + win.top.screenY - (h / 2)
-        const x = win.top.outerWidth / 2 + win.top.screenX - (w / 2)
-        return win.open(url, windowName, `toolbar=no, location=no, directories=no, status=no, menubar=no, 
-        scrollbars=no, resizable=no, copyhistory=no, width=${w}, height=${h}, top=${y}, left=${x}`)
+    ws.onmessage = function (event) {
+      console.log("received: %s", event.data)
+      const qr = JSON.parse(event.data.trim().slice(1, -1)).QR
+      popupWindow(qr, "qr", window, 600, 600)
     }
-    interface Item {
-        _id: string
-        name: string
-        expireTime: string
-        createTime: string
-        pwd: string
-        wechat: string
-        apikey: string
-    }
-
-    const handleQuery = async (author: string) => {
-        setAuthor(author)
-        const options = {
-            method: 'GET',
-            headers: {
-                'Authorization': author,
-                'Content-Type': 'application/json'
-            }
-        }
-        const response = await fetch("/api/all", options)
-        if (response.status === 200) {
-            const data = await response.json()
-            console.info(data.result)
-            setItems(data.result)
-        }
-    }
-    //启动微信
-    const starWechat = async (wechatName: string, key: string, action: string) => {
-        console.info(`wechatName=${wechatName}`)
-        const options = {
-            method: 'GET',
-            headers: {
-                'Authorization': author(),
-                'Content-Type': 'application/json',
-                'wechatName': wechatName,
-                'key': key,
-                'action': action
-            }
-        }
-
-        const response = await fetch("/api/shell", options)
-        if (response.status === 200) {
-            const data = await response.json()
-            console.info(data.result)
-
-        }
-    }
-    const delUserById = (id: string) => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Authorization': author(),
-                'Content-Type': 'application/json',
-                '_id': id
-            }
-        }
-        fetch("/api/del", options)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok")
-                }
-                console.info(response.json())
-            })
-            .then((data) => {
-                console.info(data)
-                setItems(items().filter((item) => item._id !== id))
-            })
-            .catch((error) => {
-                // handle error
-                console.error("Fetch Error: ", error)
-            })
-
-
-    }
-
-    return (
-        <div class="container">
-            <table class="table table-bordered table-sm">
-
-                <thead>
-                    <tr>
-                        <th class="col-sm-1">姓名</th>
-                        <th class="col-sm-1">密码</th>
-                        <th class="col-sm-1.5">创建时间</th>
-                        <th class="col-sm-1.5">过期时间</th>
-                        <th class="col-sm-4">OPENAI KEY</th>
-                        <th class="col-sm-2">微信名称</th>
-                        <th class="col-sm-2">操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {items().map((item) => (
-                        <tr>
-                            <td class="col-sm-1">{item.name}</td>
-                            <td class="col-sm-1">{item.pwd}</td>
-                            <td class="col-sm-1.5" style="word-wrap:break-word; word-break:break-all">{item.createTime}</td>
-                            <td class="col-sm-1.5" style="word-wrap:break-word; word-break:break-all">{item.expireTime}</td>
-                            <td class="col-sm-4" style="word-wrap:break-word; word-break:break-all">{item.apikey}</td>
-                            <td class="col-sm-2">{item.wechat}</td>
-                            <td class="col-sm-2">
-                                <button type="button" onclick={() => delUserById(item._id)} class="btn btn-primary">删除</button>
-                                &nbsp;&nbsp;
-                                <button type="button" onclick={() => starWechat(item.wechat, item.apikey, 'start')} class="btn btn-primary">启动微信</button>
-                                &nbsp;&nbsp;
-                                <button type="button" onclick={() => starWechat(item.wechat, item.apikey, 'stop')} class="btn btn-primary">停止微信</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+  })
+  const test = () => {
+    const qr =
+      "https://api.pwmqr.com/qrcode/create/?url=https://login.weixin.qq.com/l/geM-_nEEPw=="
+    popupWindow(qr, "qr", window, 600, 600)
+  }
+  function popupWindow(
+    url: string,
+    windowName: string,
+    win: window,
+    w: number,
+    h: number
+  ) {
+    const y = win.top.outerHeight / 2 + win.top.screenY - h / 2
+    const x = win.top.outerWidth / 2 + win.top.screenX - w / 2
+    return win.open(
+      url,
+      windowName,
+      `toolbar=no, location=no, directories=no, status=no, menubar=no, 
+        scrollbars=no, resizable=no, copyhistory=no, width=${w}, height=${h}, top=${y}, left=${x}`
     )
+  }
+  interface Item {
+    id: string
+    name: string
+    expireTime: string
+    createTime: string
+    pwd: string
+    wechat: string
+    apikey: string
+  }
+
+  const handleQuery = async (author: string) => {
+    setAuthor(author)
+    const options = {
+      method: "GET",
+      headers: {
+        Authorization: author,
+        "Content-Type": "application/json"
+      }
+    }
+    const response = await fetch("/api/all", options)
+    if (response.status === 200) {
+      const data = await response.json()
+      console.info(data.result)
+      setItems(data.result)
+    }
+  }
+  //启动微信
+  const starWechat = async (
+    wechatName: string,
+    key: string,
+    action: string
+  ) => {
+    console.info(`wechatName=${wechatName}`)
+    const options = {
+      method: "GET",
+      headers: {
+        Authorization: author(),
+        "Content-Type": "application/json",
+        wechatName: wechatName,
+        key: key,
+        action: action
+      }
+    }
+
+    const response = await fetch("/api/shell", options)
+    if (response.status === 200) {
+      const data = await response.json()
+      console.info(data.result)
+    }
+  }
+  const delUserById = (id: string) => {
+    const options = {
+      method: "GET",
+      headers: {
+        Authorization: author(),
+        "Content-Type": "application/json",
+        _id: id
+      }
+    }
+    fetch("/api/del", options)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok")
+        }
+        console.info(response.json())
+      })
+      .then(data => {
+        console.info(data)
+        setItems(items().filter(item => item.id !== id))
+      })
+      .catch(error => {
+        // handle error
+        console.error("Fetch Error: ", error)
+      })
+  }
+
+  return (
+    <div class="container">
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th class="col-sm-1">姓名</th>
+            <th class="col-sm-1">密码</th>
+            <th class="col-sm-1.5">创建时间</th>
+            <th class="col-sm-1.5">过期时间</th>
+            <th class="col-sm-4">OPENAI KEY</th>
+            <th class="col-sm-2">微信名称</th>
+            <th class="col-sm-2">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items().map(item => (
+            <tr>
+              <td class="col-sm-1">{item.name}</td>
+              <td class="col-sm-1">{item.pwd}</td>
+              <td
+                class="col-sm-1.5"
+                style="word-wrap:break-word; word-break:break-all"
+              >
+                {item.createTime}
+              </td>
+              <td
+                class="col-sm-1.5"
+                style="word-wrap:break-word; word-break:break-all"
+              >
+                {item.expireTime}
+              </td>
+              <td
+                class="col-sm-4"
+                style="word-wrap:break-word; word-break:break-all"
+              >
+                {item.apikey}
+              </td>
+              <td class="col-sm-2">{item.wechat}</td>
+              <td class="col-sm-2">
+                <button
+                  type="button"
+                  onclick={() => delUserById(item.id)}
+                  class="btn btn-primary"
+                >
+                  删除
+                </button>
+                &nbsp;&nbsp;
+                <button
+                  type="button"
+                  onclick={() => starWechat(item.wechat, item.apikey, "start")}
+                  class="btn btn-primary"
+                >
+                  启动微信
+                </button>
+                &nbsp;&nbsp;
+                <button
+                  type="button"
+                  onclick={() => starWechat(item.wechat, item.apikey, "stop")}
+                  class="btn btn-primary"
+                >
+                  停止微信
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
 }
