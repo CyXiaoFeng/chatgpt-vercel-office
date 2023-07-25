@@ -1,6 +1,5 @@
 import type { APIRoute } from "astro"
 import { deleteUsers, listUsers, insertUser } from "@/utils/postgresdb"
-import { ObjectId } from "mongodb"
 import moment from "moment"
 import { execSync, spawn } from "child_process"
 import * as iconv from "iconv-lite"
